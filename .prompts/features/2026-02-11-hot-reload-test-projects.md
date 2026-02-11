@@ -737,6 +737,21 @@ Each project with a database should include seed data for immediate testing:
 
 ## Project Structure Summary
 
+All sample projects are located under the `samples/` folder at the repository root.
+
+```
+samples/
+├── TaskFlow/                    (Aspire)
+├── RecipeVault.Server/          (Blazor Server)
+├── RecipeVault.Wasm/            (Blazor WASM)
+├── RecipeVault.Auto/            (Blazor Auto)
+├── ComponentCraft/              (Blazor + RCL)
+├── BookBuddy.RazorPages/        (Razor Pages)
+├── ExpenseTracker.Mvc/          (MVC)
+├── TaskTimer.Console/           (Console)
+└── ContactsManager.Console/     (Console + EF)
+```
+
 | Project | Type | Database | Theme |
 |---------|------|----------|-------|
 | TaskFlow.* | Aspire | SQLite/EF | Task Management |
