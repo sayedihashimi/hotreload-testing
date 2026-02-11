@@ -1,0 +1,52 @@
+{
+  "id": "default-chat",
+  "projectName": "hotreload-testing",
+  "messages": [
+    {
+      "id": "welcome-planning-1",
+      "role": "assistant",
+      "content": "I'm in Planning Mode. I'll help you create and update spec files without touching your code.",
+      "timestamp": "2026-02-11T20:48:16.179Z"
+    },
+    {
+      "id": "welcome-planning-2",
+      "role": "assistant",
+      "content": "What would you like to plan or refine in your specifications?",
+      "timestamp": "2026-02-11T20:48:16.179Z"
+    },
+    {
+      "id": "user-1770843048047-fhslxno09",
+      "role": "user",
+      "content": "I am working on .NET Hot Reload and `dotnet watch`. I need to create a bunch of sample projects that I can use to test out .NET Hot Reload and `dotnet watch`. I'd like to create a spec which outlines what kinds of apps to create and what kind of dummy content those should contain. I'd like to focus on .NET 10 projects including the following project types: Aspire, Blazor, Razor Pages, MVC, Console apps. It would be good to add a sample Blazor project that uses Razor Class libraries. I want you to help me come up with some fictitious apps for each of these project types. The spec file should have enough details to create a small, but reasonably sized app for each project type.",
+      "timestamp": "2026-02-11T20:50:48.047Z"
+    },
+    {
+      "id": "assistant-1770843048048-suucs3em2",
+      "role": "assistant",
+      "content": "This is a fresh project. Before I create the spec, I have a few questions to make sure I capture exactly what you need:\n\n**Scope & Complexity Questions:**\n\n1. **App complexity**: Should each sample be a minimal \"hello world\" style app, or something with 2-3 features that exercises more Hot Reload scenarios (model changes, UI updates, service modifications)?\n\n2. **Hot Reload focus areas**: Are there specific Hot Reload scenarios you want to test? For example:\n   - Razor/Blazor component changes\n   - C# code-behind changes\n   - CSS/styling changes\n   - Adding new methods/classes\n   - Modifying DI services\n   - Database/EF Core model changes\n\n3. **Aspire specifics**: For the Aspire project, how many services should the orchestration include? (e.g., just web frontend + API, or also include Redis, database, etc.?)\n\n4. **Blazor modes**: Should the Blazor sample be Server, WebAssembly, or the new Auto/SSR hybrid mode? (Or do you want multiple Blazor variants?)\n\n5. **Razor Class Library**: Should this be a separate standalone RCL project that the Blazor app references, or integrated within an Aspire solution?\n\n6. **Shared theme**: Would you like all apps to share a common fictional domain (e.g., all related to a \"bookstore\" or \"task tracker\"), or should each have its own distinct theme to make them easily distinguishable?\n\n7. **Data persistence**: Should apps include actual database integration (SQLite/EF Core), or just in-memory data for simplicity?\n\nOnce I understand these, I can create a detailed, build-ready specification.",
+      "timestamp": "2026-02-11T20:50:48.048Z"
+    },
+    {
+      "id": "user-1770843255112-y8lfes12l",
+      "role": "user",
+      "content": "1.  more than a simple Hello World. If the app connects to a database it should use Entity Framework and the database should be sqlite.\n 2. All of them\n 3. Front-end + API sounds good\n 4. Create different projects and name them so I can tell the hosting model\n 5. Separate project but in the solutions that use it.\n 6. doesn't matter\n 7. Some should use EF but it's not a requirement for all projects",
+      "timestamp": "2026-02-11T20:54:15.112Z"
+    },
+    {
+      "id": "assistant-1770843255112-lqjmeqptu",
+      "role": "assistant",
+      "content": "Feature spec created. Here's a summary:\n\n## Plan Summary\n\n**File Created:** `.prompts/features/2026-02-11-hot-reload-test-projects.md`\n\n### 9 Sample Projects Defined:\n\n| Project | Type | Database | Theme |\n|---------|------|----------|-------|\n| **TaskFlow.*** | Aspire | SQLite/EF | Task management (Frontend + API) |\n| **RecipeVault.Server** | Blazor Server | SQLite/EF | Recipe collection |\n| **RecipeVault.Wasm** | Blazor WASM | localStorage | Recipe collection (client-only) |\n| **RecipeVault.Auto** | Blazor Auto/SSR | SQLite/EF | Recipe collection (hybrid) |\n| **ComponentCraft.*** | Blazor + RCL | None | UI component showcase |\n| **BookBuddy.RazorPages** | Razor Pages | SQLite/EF | Book tracking |\n| **ExpenseTracker.Mvc** | MVC | SQLite/EF | Expense tracking |\n| **TaskTimer.Console** | Console | None | Pomodoro timer |\n| **ContactsManager.Console** | Console | SQLite/EF | Contact management |\n\n### Key Details Included:\n- Full entity models with relationships\n- Page/view structures\n- Component hierarchies\n- Service interfaces\n- Specific Hot Reload test points for each project\n- Seed data requirements\n\nWould you like me to refine any section or add more detail to specific projects?",
+      "timestamp": "2026-02-11T20:54:15.112Z"
+    },
+    {
+      "id": "cmd-toolu_01Y4sZ3UXnTxZCUSzsxqQJ4r",
+      "role": "command",
+      "content": "(command executed)",
+      "timestamp": "2026-02-11T20:54:27.290Z",
+      "command": "New-Item -ItemType Directory -Path \".prompts\\features\" -Force",
+      "commandStatus": "success"
+    }
+  ],
+  "createdAt": "2026-02-11T20:48:16.718Z",
+  "updatedAt": "2026-02-11T20:55:58.939Z"
+}

@@ -1,0 +1,23 @@
+{
+  "lastChatSession": "default-chat.json",
+  "openTabs": {
+    "tabs": [
+      {
+        "id": "generate-app",
+        "type": "chat",
+        "label": "Generate App",
+        "isPinned": true,
+        "isTemporary": false
+      },
+      {
+        "id": "2026-02-11-hot-reload-test-projects.md",
+        "type": "feature-file",
+        "label": "hot-reload-test-projects",
+        "filePath": "2026-02-11-hot-reload-test-projects.md",
+        "isPinned": true,
+        "isTemporary": false
+      }
+    ],
+    "activeTabId": "2026-02-11-hot-reload-test-projects.md"
+  }
+}
