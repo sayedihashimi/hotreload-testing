@@ -205,7 +205,11 @@ async Task AddTagToContact()
     displayService.ShowTags(tags);
     
     Console.Write("\nEnter tag ID: ");
-    var tagId = int.Parse(Console.ReadLine() ?? "0");
+    if (!int.TryParse(Console.ReadLine(), out var tagId))
+    {
+        displayService.ShowError("Invalid tag ID.");
+        return;
+    }
     
     await tagService.AddTagToContactAsync(contactId, tagId);
     displayService.ShowMessage("Tag added to contact!");
@@ -225,7 +229,11 @@ async Task RemoveTagFromContact()
     displayService.ShowContact(contact);
     
     Console.Write("\nEnter tag ID to remove: ");
-    var tagId = int.Parse(Console.ReadLine() ?? "0");
+    if (!int.TryParse(Console.ReadLine(), out var tagId))
+    {
+        displayService.ShowError("Invalid tag ID.");
+        return;
+    }
     
     await tagService.RemoveTagFromContactAsync(contactId, tagId);
     displayService.ShowMessage("Tag removed from contact!");
@@ -247,7 +255,11 @@ async Task DeleteTag()
     displayService.ShowTags(tags);
     
     Console.Write("\nEnter tag ID to delete: ");
-    var tagId = int.Parse(Console.ReadLine() ?? "0");
+    if (!int.TryParse(Console.ReadLine(), out var tagId))
+    {
+        displayService.ShowError("Invalid tag ID.");
+        return;
+    }
     
     await tagService.DeleteTagAsync(tagId);
     displayService.ShowMessage("Tag deleted successfully!");

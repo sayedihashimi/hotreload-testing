@@ -47,7 +47,7 @@ public class ContactService : IContactService
 
     public async Task<Contact> AddContactAsync(Contact contact)
     {
-        contact.CreatedAt = DateTime.Now;
+        contact.CreatedAt = DateTime.UtcNow;
         _context.Contacts.Add(contact);
         await _context.SaveChangesAsync();
         return contact;

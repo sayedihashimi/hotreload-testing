@@ -48,13 +48,19 @@ public class TagService : ITagService
 
     public async Task AddTagToContactAsync(int contactId, int tagId)
     {
-        var contactTag = new ContactTag
+        var exists = await _context.ContactTags
+            .AnyAsync(ct => ct.ContactId == contactId && ct.TagId == tagId);
+        
+        if (!exists)
         {
-            ContactId = contactId,
-            TagId = tagId
-        };
-        _context.ContactTags.Add(contactTag);
-        await _context.SaveChangesAsync();
+            var contactTag = new ContactTag
+            {
+                ContactId = contactId,
+                TagId = tagId
+            };
+            _context.ContactTags.Add(contactTag);
+            await _context.SaveChangesAsync();
+        }
     }
 
     public async Task RemoveTagFromContactAsync(int contactId, int tagId)
