@@ -40,7 +40,10 @@ public class DisplayService : IDisplayService
         System.Console.WriteLine($"Company: {contact.Company}");
         System.Console.WriteLine($"Notes: {contact.Notes}");
         System.Console.WriteLine($"Created: {contact.CreatedAt:yyyy-MM-dd}");
-        System.Console.WriteLine($"Last Contacted: {contact.LastContactedAt:yyyy-MM-dd}");
+        var lastContacted = contact.LastContactedAt.HasValue 
+            ? contact.LastContactedAt.Value.ToString("yyyy-MM-dd") 
+            : "Never";
+        System.Console.WriteLine($"Last Contacted: {lastContacted}");
         var tags = string.Join(", ", contact.ContactTags.Select(ct => ct.Tag.Name));
         System.Console.WriteLine($"Tags: {tags}");
     }

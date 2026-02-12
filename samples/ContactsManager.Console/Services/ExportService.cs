@@ -13,7 +13,8 @@ public class ExportService : IExportService
         foreach (var contact in contacts)
         {
             var tags = string.Join("; ", contact.ContactTags.Select(ct => ct.Tag.Name));
-            csv.AppendLine($"\"{contact.FirstName}\",\"{contact.LastName}\",\"{contact.Email}\",\"{contact.Phone}\",\"{contact.Company}\",\"{contact.Notes}\",\"{contact.CreatedAt:yyyy-MM-dd}\",\"{contact.LastContactedAt:yyyy-MM-dd}\",\"{tags}\"");
+            var lastContacted = contact.LastContactedAt?.ToString("yyyy-MM-dd") ?? string.Empty;
+            csv.AppendLine($"\"{contact.FirstName}\",\"{contact.LastName}\",\"{contact.Email}\",\"{contact.Phone}\",\"{contact.Company}\",\"{contact.Notes}\",\"{contact.CreatedAt:yyyy-MM-dd}\",\"{lastContacted}\",\"{tags}\"");
         }
 
         await File.WriteAllTextAsync(filePath, csv.ToString());

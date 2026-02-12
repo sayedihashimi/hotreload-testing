@@ -13,7 +13,7 @@ services.AddScoped<ITagService, TagService>();
 services.AddScoped<IExportService, ExportService>();
 services.AddScoped<IDisplayService, DisplayService>();
 
-var serviceProvider = services.BuildServiceProvider();
+using var serviceProvider = services.BuildServiceProvider();
 
 using (var scope = serviceProvider.CreateScope())
 {
