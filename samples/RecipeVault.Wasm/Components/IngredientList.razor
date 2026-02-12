@@ -1,0 +1,18 @@
+@using RecipeVault.Wasm.Models
+
+<div class="ingredient-list">
+    <h4>Ingredients</h4>
+    <ul>
+        @foreach (var ingredient in Ingredients)
+        {
+            <li>
+                <strong>@ingredient.Quantity @ingredient.Unit</strong> @ingredient.Name
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    [Parameter]
+    public List<Ingredient> Ingredients { get; set; } = new();
+}

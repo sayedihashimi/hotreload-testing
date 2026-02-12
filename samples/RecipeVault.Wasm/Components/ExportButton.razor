@@ -1,0 +1,23 @@
+@using RecipeVault.Wasm.Models
+@using System.Text.Json
+@inject IJSRuntime JSRuntime
+
+<button class="btn btn-success" @onclick="ExportRecipes">
+    📥 Export Recipes to JSON
+</button>
+
+@code {
+    [Parameter]
+    public List<Recipe> Recipes { get; set; } = new();
+
+    private async Task ExportRecipes()
+    {
+        var json = JsonSerializer.Serialize(Recipes, new JsonSerializerOptions 
+        { 
+            WriteIndented = true 
+        });
+        
+        var fileName = $"recipes-export-{DateTime.Now:yyyy-MM-dd}.json";
+        await JSRuntime.InvokeVoidAsync("downloadFile", fileName, json);
+    }
+}

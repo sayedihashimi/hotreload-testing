@@ -1,0 +1,39 @@
+@inject IJSRuntime JSRuntime
+@implements IDisposable
+
+<div class="offline-indicator @(isOnline ? "online" : "offline")">
+    @if (isOnline)
+    {
+        <span>🟢 Online</span>
+    }
+    else
+    {
+        <span>🔴 Offline</span>
+    }
+</div>
+
+@code {
+    private bool isOnline = true;
+    private DotNetObjectReference<OfflineIndicator>? objRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            await JSRuntime.InvokeVoidAsync("registerOnlineStatusListener", objRef);
+        }
+    }
+
+    [JSInvokable]
+    public void UpdateOnlineStatus(bool online)
+    {
+        isOnline = online;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        objRef?.Dispose();
+    }
+}
