@@ -1,0 +1,95 @@
+@page "/recipes/{id:int}"
+@using Microsoft.EntityFrameworkCore
+@using RecipeVault.Server.Data
+@using RecipeVault.Server.Models
+@inject RecipeContext DbContext
+@inject NavigationManager Navigation
+
+<PageTitle>@recipe?.Name - RecipeVault</PageTitle>
+
+<div class="container py-4">
+    @if (recipe == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <div class="row mb-4">
+            <div class="col">
+                <h1>@recipe.Name</h1>
+                <p class="lead">@recipe.Description</p>
+            </div>
+            <div class="col-auto">
+                <a href="/recipes/edit/@recipe.Id" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <img src="@recipe.ImageUrl" class="img-fluid rounded" alt="@recipe.Name" style="width: 100%; max-height: 400px; object-fit: cover;">
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Recipe Details</h5>
+                        <p><strong>Servings:</strong> @recipe.Servings</p>
+                        <div class="mb-2">
+                            <TimeBadge Icon="clock" Time="@recipe.PrepTimeMinutes" Label="Prep" />
+                            <TimeBadge Icon="fire" Time="@recipe.CookTimeMinutes" Label="Cook" />
+                        </div>
+                        <div class="mb-2">
+                            <strong>Difficulty:</strong>
+                            <DifficultyStars Difficulty="@recipe.Difficulty" />
+                        </div>
+                        @if (recipe.RecipeTags.Any())
+                        {
+                            <div>
+                                <strong>Tags:</strong>
+                                @foreach (var recipeTag in recipe.RecipeTags)
+                                {
+                                    <span class="badge me-1" style="background-color: @recipeTag.Tag.Color">
+                                        @recipeTag.Tag.Name
+                                    </span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <IngredientList Ingredients="@recipe.Ingredients" Editable="false" />
+            </div>
+            <div class="col-md-6 mb-4">
+                <InstructionSteps Instructions="@recipe.Instructions" Editable="false" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <a href="/recipes" class="btn btn-secondary">Back to Recipes</a>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Recipe? recipe;
+
+    protected override async Task OnInitializedAsync()
+    {
+        recipe = await DbContext.Recipes
+            .Include(r => r.Ingredients)
+            .Include(r => r.Instructions)
+            .Include(r => r.RecipeTags)
+            .ThenInclude(rt => rt.Tag)
+            .FirstOrDefaultAsync(r => r.Id == Id);
+    }
+}

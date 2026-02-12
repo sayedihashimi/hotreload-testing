@@ -1,0 +1,35 @@
+@using RecipeVault.Server.Models
+
+<div class="card recipe-card h-100">
+    <img src="@Recipe.ImageUrl" class="card-img-top" alt="@Recipe.Name" style="height: 200px; object-fit: cover;">
+    <div class="card-body">
+        <h5 class="card-title">@Recipe.Name</h5>
+        <p class="card-text">@Recipe.Description</p>
+        <div class="mb-2">
+            <TimeBadge Icon="clock" Time="@Recipe.PrepTimeMinutes" Label="Prep" />
+            <TimeBadge Icon="fire" Time="@Recipe.CookTimeMinutes" Label="Cook" />
+        </div>
+        <div class="mb-2">
+            <DifficultyStars Difficulty="@Recipe.Difficulty" />
+        </div>
+        @if (Recipe.RecipeTags.Any())
+        {
+            <div class="mb-2">
+                @foreach (var recipeTag in Recipe.RecipeTags)
+                {
+                    <span class="badge me-1" style="background-color: @recipeTag.Tag.Color">
+                        @recipeTag.Tag.Name
+                    </span>
+                }
+            </div>
+        }
+    </div>
+    <div class="card-footer">
+        <a href="/recipes/@Recipe.Id" class="btn btn-primary w-100">View Recipe</a>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Recipe Recipe { get; set; } = null!;
+}

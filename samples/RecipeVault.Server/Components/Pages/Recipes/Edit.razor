@@ -1,0 +1,149 @@
+@page "/recipes/edit/{id:int}"
+@using Microsoft.EntityFrameworkCore
+@using RecipeVault.Server.Data
+@using RecipeVault.Server.Models
+@inject RecipeContext DbContext
+@inject NavigationManager Navigation
+
+<PageTitle>Edit Recipe</PageTitle>
+
+<div class="container py-4">
+    @if (recipe == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <h1>Edit Recipe: @recipe.Name</h1>
+
+        <EditForm Model="@recipe" OnValidSubmit="@HandleSubmit">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5>Basic Information</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Recipe Name</label>
+                                <InputText @bind-Value="recipe.Name" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <InputTextArea @bind-Value="recipe.Description" class="form-control" rows="3" />
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Prep Time (min)</label>
+                                    <InputNumber @bind-Value="recipe.PrepTimeMinutes" class="form-control" />
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Cook Time (min)</label>
+                                    <InputNumber @bind-Value="recipe.CookTimeMinutes" class="form-control" />
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Servings</label>
+                                    <InputNumber @bind-Value="recipe.Servings" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Difficulty</label>
+                                    <InputSelect @bind-Value="recipe.Difficulty" class="form-select">
+                                        <option value="@DifficultyLevel.Easy">Easy</option>
+                                        <option value="@DifficultyLevel.Medium">Medium</option>
+                                        <option value="@DifficultyLevel.Hard">Hard</option>
+                                    </InputSelect>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Image URL</label>
+                                    <InputText @bind-Value="recipe.ImageUrl" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="recipe.IsFeatured" class="form-check-input" id="featured" />
+                                    <label class="form-check-label" for="featured">
+                                        Feature this recipe
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <IngredientList Ingredients="@recipe.Ingredients" Editable="true" />
+                        </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <InstructionSteps Instructions="@recipe.Instructions" Editable="true" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <TagSelector AvailableTags="@availableTags" @bind-SelectedTagIds="selectedTagIds" />
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
+                        <a href="/recipes/@recipe.Id" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </EditForm>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Recipe? recipe;
+    private List<Tag> availableTags = new();
+    private List<int> selectedTagIds = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        recipe = await DbContext.Recipes
+            .Include(r => r.Ingredients)
+            .Include(r => r.Instructions)
+            .Include(r => r.RecipeTags)
+            .ThenInclude(rt => rt.Tag)
+            .FirstOrDefaultAsync(r => r.Id == Id);
+
+        if (recipe != null)
+        {
+            selectedTagIds = recipe.RecipeTags.Select(rt => rt.TagId).ToList();
+        }
+
+        availableTags = await DbContext.Tags.ToListAsync();
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (recipe == null) return;
+
+        // Update recipe tags
+        var existingTags = await DbContext.RecipeTags
+            .Where(rt => rt.RecipeId == recipe.Id)
+            .ToListAsync();
+        DbContext.RecipeTags.RemoveRange(existingTags);
+
+        foreach (var tagId in selectedTagIds)
+        {
+            DbContext.RecipeTags.Add(new RecipeTag
+            {
+                RecipeId = recipe.Id,
+                TagId = tagId
+            });
+        }
+
+        await DbContext.SaveChangesAsync();
+        Navigation.NavigateTo($"/recipes/{recipe.Id}");
+    }
+}

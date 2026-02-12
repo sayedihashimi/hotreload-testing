@@ -1,0 +1,21 @@
+@using RecipeVault.Server.Models
+
+<div class="difficulty-stars">
+    @for (int i = 1; i <= 3; i++)
+    {
+        @if (i <= (int)Difficulty)
+        {
+            <span class="text-warning">★</span>
+        }
+        else
+        {
+            <span class="text-muted">☆</span>
+        }
+    }
+    <span class="ms-2 text-muted">@Difficulty</span>
+</div>
+
+@code {
+    [Parameter]
+    public DifficultyLevel Difficulty { get; set; }
+}

@@ -1,0 +1,55 @@
+@page "/recipes"
+@using Microsoft.EntityFrameworkCore
+@using RecipeVault.Server.Data
+@using RecipeVault.Server.Models
+@inject RecipeContext DbContext
+
+<PageTitle>Browse Recipes</PageTitle>
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>Browse Recipes</h1>
+        </div>
+        <div class="col-auto">
+            <a href="/recipes/create" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Add Recipe
+            </a>
+        </div>
+    </div>
+
+    @if (recipes == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else if (!recipes.Any())
+    {
+        <div class="alert alert-info">
+            No recipes found. <a href="/recipes/create">Create your first recipe!</a>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var recipe in recipes)
+            {
+                <div class="col">
+                    <RecipeCard Recipe="@recipe" />
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<Recipe>? recipes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        recipes = await DbContext.Recipes
+            .Include(r => r.RecipeTags)
+            .ThenInclude(rt => rt.Tag)
+            .OrderByDescending(r => r.CreatedDate)
+            .ToListAsync();
+    }
+}

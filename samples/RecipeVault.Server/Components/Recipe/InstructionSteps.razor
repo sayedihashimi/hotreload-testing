@@ -1,0 +1,65 @@
+@using RecipeVault.Server.Models
+
+<div class="instruction-steps">
+    <h4>Instructions</h4>
+    @if (Editable)
+    {
+        <div class="mb-3">
+            @foreach (var instruction in Instructions.OrderBy(i => i.StepNumber))
+            {
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Step @instruction.StepNumber</span>
+                    <input type="text" class="form-control" @bind="instruction.Description" placeholder="Instruction" />
+                    <button class="btn btn-outline-danger" type="button" @onclick="() => RemoveInstruction(instruction)">
+                        Remove
+                    </button>
+                </div>
+            }
+            <button class="btn btn-outline-primary" type="button" @onclick="AddInstruction">
+                Add Step
+            </button>
+        </div>
+    }
+    else
+    {
+        <ol class="list-group list-group-numbered">
+            @foreach (var instruction in Instructions.OrderBy(i => i.StepNumber))
+            {
+                <li class="list-group-item">
+                    @instruction.Description
+                </li>
+            }
+        </ol>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<Instruction> Instructions { get; set; } = new();
+
+    [Parameter]
+    public bool Editable { get; set; } = false;
+
+    private void AddInstruction()
+    {
+        Instructions.Add(new Instruction
+        {
+            StepNumber = Instructions.Count + 1
+        });
+    }
+
+    private void RemoveInstruction(Instruction instruction)
+    {
+        Instructions.Remove(instruction);
+        ReorderInstructions();
+    }
+
+    private void ReorderInstructions()
+    {
+        var ordered = Instructions.OrderBy(i => i.StepNumber).ToList();
+        for (int i = 0; i < ordered.Count; i++)
+        {
+            ordered[i].StepNumber = i + 1;
+        }
+    }
+}

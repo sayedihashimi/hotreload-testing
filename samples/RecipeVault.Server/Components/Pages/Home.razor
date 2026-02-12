@@ -1,0 +1,62 @@
+﻿@page "/"
+@using Microsoft.EntityFrameworkCore
+@using RecipeVault.Server.Data
+@using RecipeVault.Server.Models
+@inject RecipeContext DbContext
+
+<PageTitle>RecipeVault - Home</PageTitle>
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">Welcome to RecipeVault</h1>
+            <p class="lead">Discover and manage your favorite recipes</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Featured Recipes</h2>
+        </div>
+    </div>
+
+    @if (featuredRecipes == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else if (!featuredRecipes.Any())
+    {
+        <p>No featured recipes available.</p>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var recipe in featuredRecipes)
+            {
+                <div class="col">
+                    <RecipeCard Recipe="@recipe" />
+                </div>
+            }
+        </div>
+    }
+
+    <div class="row mt-4">
+        <div class="col text-center">
+            <a href="/recipes" class="btn btn-primary btn-lg">Browse All Recipes</a>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Recipe>? featuredRecipes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        featuredRecipes = await DbContext.Recipes
+            .Include(r => r.RecipeTags)
+            .ThenInclude(rt => rt.Tag)
+            .Where(r => r.IsFeatured)
+            .OrderByDescending(r => r.CreatedDate)
+            .ToListAsync();
+    }
+}
