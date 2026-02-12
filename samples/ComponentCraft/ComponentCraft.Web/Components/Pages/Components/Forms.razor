@@ -1,0 +1,112 @@
+@page "/components/forms"
+@using ComponentCraft.Components.Forms
+@using ComponentCraft.Components.Buttons
+@using ComponentCraft.Components.Cards
+@using ComponentCraft.Components.Layout
+
+<PageTitle>Forms - ComponentCraft</PageTitle>
+
+<PageHeader Title="Forms" Subtitle="Form input components with validation support" />
+
+<div class="container" style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+    
+    <InfoCard Title="Text Inputs">
+        <TextInput Label="Username" Placeholder="Enter username" HelpText="Choose a unique username" @bind-Value="username" />
+        <TextInput Label="Email" InputType="email" Placeholder="you@example.com" @bind-Value="email" />
+        <TextInput Label="Password" InputType="password" Placeholder="Enter password" @bind-Value="password" />
+        <TextInput Label="Disabled Input" Value="Read only value" Disabled="true" />
+        @if (!string.IsNullOrEmpty(username))
+        {
+            <p style="margin-top: 1rem; color: var(--cc-text-secondary);">Username: @username</p>
+        }
+    </InfoCard>
+
+    <InfoCard Title="Select Inputs" CssClass="mt-3">
+        <SelectInput Label="Country" Placeholder="Select a country" @bind-Value="selectedCountry">
+            <option value="us">United States</option>
+            <option value="uk">United Kingdom</option>
+            <option value="ca">Canada</option>
+            <option value="au">Australia</option>
+        </SelectInput>
+
+        <SelectInput Label="Favorite Framework" @bind-Value="selectedFramework" HelpText="Choose your preferred framework">
+            <option value="">-- Select One --</option>
+            <option value="blazor">Blazor</option>
+            <option value="react">React</option>
+            <option value="vue">Vue</option>
+            <option value="angular">Angular</option>
+        </SelectInput>
+
+        @if (!string.IsNullOrEmpty(selectedFramework))
+        {
+            <p style="margin-top: 1rem; color: var(--cc-text-secondary);">You selected: @selectedFramework</p>
+        }
+    </InfoCard>
+
+    <InfoCard Title="Date Picker" CssClass="mt-3">
+        <DatePicker Label="Birth Date" @bind-Value="birthDate" HelpText="Select your date of birth" />
+        <DatePicker Label="Start Date" @bind-Value="startDate" />
+        @if (!string.IsNullOrEmpty(birthDate))
+        {
+            <p style="margin-top: 1rem; color: var(--cc-text-secondary);">Birth Date: @birthDate</p>
+        }
+    </InfoCard>
+
+    <InfoCard Title="Complete Form Example" CssClass="mt-3">
+        <TextInput Label="Full Name" Placeholder="John Doe" @bind-Value="fullName" />
+        <TextInput Label="Email Address" InputType="email" Placeholder="john@example.com" @bind-Value="formEmail" />
+        <SelectInput Label="Department" @bind-Value="department">
+            <option value="">-- Select Department --</option>
+            <option value="engineering">Engineering</option>
+            <option value="design">Design</option>
+            <option value="marketing">Marketing</option>
+            <option value="sales">Sales</option>
+        </SelectInput>
+        <DatePicker Label="Join Date" @bind-Value="joinDate" />
+        <div style="margin-top: 1rem;">
+            <PrimaryButton OnClick="@SubmitForm">Submit Form</PrimaryButton>
+            <SecondaryButton OnClick="@ClearForm">Clear</SecondaryButton>
+        </div>
+        @if (formSubmitted)
+        {
+            <div style="margin-top: 1rem; padding: 1rem; background: var(--cc-bg-secondary); border-radius: var(--cc-radius);">
+                <strong>Form Submitted!</strong>
+                <p>Name: @fullName</p>
+                <p>Email: @formEmail</p>
+                <p>Department: @department</p>
+                <p>Join Date: @joinDate</p>
+            </div>
+        }
+    </InfoCard>
+
+</div>
+
+@code {
+    private string username = "";
+    private string email = "";
+    private string password = "";
+    private string selectedCountry = "";
+    private string selectedFramework = "";
+    private string birthDate = "";
+    private string startDate = "";
+
+    private string fullName = "";
+    private string formEmail = "";
+    private string department = "";
+    private string joinDate = "";
+    private bool formSubmitted = false;
+
+    private void SubmitForm()
+    {
+        formSubmitted = true;
+    }
+
+    private void ClearForm()
+    {
+        fullName = "";
+        formEmail = "";
+        department = "";
+        joinDate = "";
+        formSubmitted = false;
+    }
+}

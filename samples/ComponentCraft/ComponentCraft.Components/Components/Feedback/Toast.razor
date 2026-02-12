@@ -1,0 +1,30 @@
+@namespace ComponentCraft.Components.Feedback
+
+@if (IsVisible)
+{
+    <div class="cc-toast cc-toast-@Type @CssClass">
+        <div class="cc-toast-content">
+            <strong class="cc-toast-title">@Title</strong>
+            @if (!string.IsNullOrEmpty(Message))
+            {
+                <p class="cc-toast-message">@Message</p>
+            }
+        </div>
+        <button class="cc-toast-close" @onclick="Close">&times;</button>
+    </div>
+}
+
+@code {
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public string Type { get; set; } = "info";
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter] public string? Message { get; set; }
+    [Parameter] public bool IsVisible { get; set; } = true;
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private async Task Close()
+    {
+        IsVisible = false;
+        await OnClose.InvokeAsync();
+    }
+}

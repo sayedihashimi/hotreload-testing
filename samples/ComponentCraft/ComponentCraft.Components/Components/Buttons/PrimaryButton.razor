@@ -1,0 +1,18 @@
+@namespace ComponentCraft.Components.Buttons
+
+<button class="cc-btn cc-btn-primary @CssClass" type="@Type" disabled="@Disabled" @onclick="OnClick">
+    @if (!string.IsNullOrEmpty(Icon))
+    {
+        <span class="cc-btn-icon">@Icon</span>
+    }
+    @ChildContent
+</button>
+
+@code {
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public string Type { get; set; } = "button";
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+}

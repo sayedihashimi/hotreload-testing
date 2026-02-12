@@ -1,0 +1,472 @@
+/* ComponentCraft CSS - Theme Variables */
+:root {
+    --cc-primary: #3b82f6;
+    --cc-primary-hover: #2563eb;
+    --cc-secondary: #6b7280;
+    --cc-secondary-hover: #4b5563;
+    --cc-success: #10b981;
+    --cc-warning: #f59e0b;
+    --cc-error: #ef4444;
+    --cc-info: #3b82f6;
+    --cc-bg: #ffffff;
+    --cc-bg-secondary: #f9fafb;
+    --cc-text: #111827;
+    --cc-text-secondary: #6b7280;
+    --cc-border: #e5e7eb;
+    --cc-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --cc-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --cc-radius: 0.375rem;
+    --cc-transition: all 0.2s ease;
+}
+
+/* Buttons */
+.cc-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--cc-radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--cc-transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cc-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cc-btn-primary {
+    background-color: var(--cc-primary);
+    color: white;
+}
+
+.cc-btn-primary:hover:not(:disabled) {
+    background-color: var(--cc-primary-hover);
+}
+
+.cc-btn-secondary {
+    background-color: var(--cc-secondary);
+    color: white;
+}
+
+.cc-btn-secondary:hover:not(:disabled) {
+    background-color: var(--cc-secondary-hover);
+}
+
+.cc-btn-icon {
+    padding: 0.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--cc-bg-secondary);
+    border: 1px solid var(--cc-border);
+}
+
+.cc-btn-icon:hover:not(:disabled) {
+    background-color: var(--cc-primary);
+    color: white;
+    border-color: var(--cc-primary);
+}
+
+/* Cards */
+.cc-card {
+    background: var(--cc-bg);
+    border: 1px solid var(--cc-border);
+    border-radius: var(--cc-radius);
+    box-shadow: var(--cc-shadow);
+    overflow: hidden;
+}
+
+.cc-card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--cc-border);
+}
+
+.cc-card-title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--cc-text);
+}
+
+.cc-card-body {
+    padding: 1.5rem;
+}
+
+.cc-card-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--cc-border);
+    background-color: var(--cc-bg-secondary);
+}
+
+.cc-stat-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.cc-stat-icon {
+    font-size: 2rem;
+}
+
+.cc-stat-content {
+    flex: 1;
+}
+
+.cc-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--cc-text);
+}
+
+.cc-stat-label {
+    font-size: 0.875rem;
+    color: var(--cc-text-secondary);
+    margin-top: 0.25rem;
+}
+
+.cc-stat-change {
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.cc-profile-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.cc-profile-avatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: var(--cc-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.cc-profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cc-profile-content {
+    flex: 1;
+}
+
+.cc-profile-name {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.cc-profile-role {
+    margin: 0.25rem 0 0;
+    color: var(--cc-text-secondary);
+    font-size: 0.875rem;
+}
+
+.cc-profile-details {
+    margin-top: 1rem;
+}
+
+/* Forms */
+.cc-form-group {
+    margin-bottom: 1rem;
+}
+
+.cc-form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--cc-text);
+}
+
+.cc-form-input,
+.cc-form-select {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--cc-border);
+    border-radius: var(--cc-radius);
+    font-size: 0.875rem;
+    transition: var(--cc-transition);
+}
+
+.cc-form-input:focus,
+.cc-form-select:focus {
+    outline: none;
+    border-color: var(--cc-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.cc-form-input:disabled,
+.cc-form-select:disabled {
+    background-color: var(--cc-bg-secondary);
+    cursor: not-allowed;
+}
+
+.cc-form-help {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--cc-text-secondary);
+}
+
+/* Layout */
+.cc-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background: var(--cc-bg);
+    border-bottom: 1px solid var(--cc-border);
+}
+
+.cc-header-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.cc-header-subtitle {
+    margin: 0.25rem 0 0;
+    color: var(--cc-text-secondary);
+}
+
+.cc-header-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.cc-sidebar {
+    width: 16rem;
+    background: var(--cc-bg);
+    border-right: 1px solid var(--cc-border);
+    transition: var(--cc-transition);
+}
+
+.cc-sidebar-collapsed {
+    width: 4rem;
+}
+
+.cc-sidebar-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--cc-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cc-sidebar-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+}
+
+.cc-sidebar-nav {
+    padding: 1rem 0;
+}
+
+.cc-footer {
+    padding: 2rem 1.5rem;
+    background: var(--cc-bg-secondary);
+    border-top: 1px solid var(--cc-border);
+    text-align: center;
+}
+
+.cc-footer-content {
+    color: var(--cc-text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Feedback */
+.cc-alert {
+    padding: 1rem;
+    border-radius: var(--cc-radius);
+    border: 1px solid;
+    position: relative;
+}
+
+.cc-alert-info {
+    background-color: #dbeafe;
+    border-color: #93c5fd;
+    color: #1e40af;
+}
+
+.cc-alert-success {
+    background-color: #d1fae5;
+    border-color: #6ee7b7;
+    color: #065f46;
+}
+
+.cc-alert-warning {
+    background-color: #fef3c7;
+    border-color: #fcd34d;
+    color: #92400e;
+}
+
+.cc-alert-error {
+    background-color: #fee2e2;
+    border-color: #fca5a5;
+    color: #991b1b;
+}
+
+.cc-alert-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.cc-alert-title {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.cc-toast {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    min-width: 20rem;
+    padding: 1rem;
+    background: var(--cc-bg);
+    border-radius: var(--cc-radius);
+    box-shadow: var(--cc-shadow-lg);
+    display: flex;
+    gap: 1rem;
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.cc-toast-info {
+    border-left: 4px solid var(--cc-info);
+}
+
+.cc-toast-success {
+    border-left: 4px solid var(--cc-success);
+}
+
+.cc-toast-warning {
+    border-left: 4px solid var(--cc-warning);
+}
+
+.cc-toast-error {
+    border-left: 4px solid var(--cc-error);
+}
+
+.cc-toast-content {
+    flex: 1;
+}
+
+.cc-toast-title {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.cc-toast-message {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--cc-text-secondary);
+}
+
+.cc-toast-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.cc-loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+}
+
+.cc-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 4px solid var(--cc-border);
+    border-top-color: var(--cc-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.cc-spinner-message {
+    margin: 0;
+    color: var(--cc-text-secondary);
+}
+
+.cc-progress-bar {
+    margin-bottom: 1rem;
+}
+
+.cc-progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.cc-progress-track {
+    height: 0.5rem;
+    background-color: var(--cc-bg-secondary);
+    border-radius: var(--cc-radius);
+    overflow: hidden;
+}
+
+.cc-progress-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.cc-progress-primary {
+    background-color: var(--cc-primary);
+}
+
+.cc-progress-success {
+    background-color: var(--cc-success);
+}
+
+.cc-progress-warning {
+    background-color: var(--cc-warning);
+}
+
+.cc-progress-error {
+    background-color: var(--cc-error);
+}

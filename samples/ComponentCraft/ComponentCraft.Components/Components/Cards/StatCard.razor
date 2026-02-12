@@ -1,0 +1,22 @@
+@namespace ComponentCraft.Components.Cards
+
+<div class="cc-card cc-stat-card @CssClass">
+    <div class="cc-stat-icon">@Icon</div>
+    <div class="cc-stat-content">
+        <div class="cc-stat-value">@Value</div>
+        <div class="cc-stat-label">@Label</div>
+        @if (!string.IsNullOrEmpty(Change))
+        {
+            <div class="cc-stat-change @ChangeClass">@Change</div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public string Icon { get; set; } = "📊";
+    [Parameter, EditorRequired] public string Value { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Label { get; set; } = string.Empty;
+    [Parameter] public string? Change { get; set; }
+    [Parameter] public string ChangeClass { get; set; } = "";
+}

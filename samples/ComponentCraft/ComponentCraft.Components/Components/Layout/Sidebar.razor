@@ -1,0 +1,30 @@
+@namespace ComponentCraft.Components.Layout
+
+<aside class="cc-sidebar @(IsCollapsed ? "cc-sidebar-collapsed" : "") @CssClass">
+    <div class="cc-sidebar-header">
+        @if (Header != null)
+        {
+            @Header
+        }
+        <button class="cc-sidebar-toggle" @onclick="ToggleSidebar">
+            <span>@(IsCollapsed ? "☰" : "✕")</span>
+        </button>
+    </div>
+    <nav class="cc-sidebar-nav">
+        @ChildContent
+    </nav>
+</aside>
+
+@code {
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public bool IsCollapsed { get; set; }
+    [Parameter] public RenderFragment? Header { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public EventCallback<bool> IsCollapsedChanged { get; set; }
+
+    private async Task ToggleSidebar()
+    {
+        IsCollapsed = !IsCollapsed;
+        await IsCollapsedChanged.InvokeAsync(IsCollapsed);
+    }
+}

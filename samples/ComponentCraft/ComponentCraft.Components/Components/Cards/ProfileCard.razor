@@ -1,0 +1,43 @@
+@namespace ComponentCraft.Components.Cards
+
+<div class="cc-card cc-profile-card @CssClass">
+    <div class="cc-profile-avatar">
+        @if (!string.IsNullOrEmpty(AvatarUrl))
+        {
+            <img src="@AvatarUrl" alt="@Name" />
+        }
+        else
+        {
+            <span>@GetInitials()</span>
+        }
+    </div>
+    <div class="cc-profile-content">
+        <h3 class="cc-profile-name">@Name</h3>
+        @if (!string.IsNullOrEmpty(Role))
+        {
+            <p class="cc-profile-role">@Role</p>
+        }
+        @if (ChildContent != null)
+        {
+            <div class="cc-profile-details">
+                @ChildContent
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter, EditorRequired] public string Name { get; set; } = string.Empty;
+    [Parameter] public string? Role { get; set; }
+    [Parameter] public string? AvatarUrl { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private string GetInitials()
+    {
+        var parts = Name?.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts == null || parts.Length == 0) return "?";
+        if (parts.Length == 1) return parts[0].Substring(0, Math.Min(2, parts[0].Length)).ToUpper();
+        return $"{parts[0][0]}{parts[^1][0]}".ToUpper();
+    }
+}

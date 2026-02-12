@@ -1,0 +1,117 @@
+@page "/components/feedback"
+@using ComponentCraft.Components.Feedback
+@using ComponentCraft.Components.Buttons
+@using ComponentCraft.Components.Cards
+@using ComponentCraft.Components.Layout
+
+<PageTitle>Feedback - ComponentCraft</PageTitle>
+
+<PageHeader Title="Feedback" Subtitle="User feedback components: alerts, toasts, spinners, and progress bars" />
+
+<div class="container" style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+    
+    <InfoCard Title="Alerts">
+        <Alert Type="info" Title="Information" Dismissible="true">
+            This is an informational alert with a dismissible close button.
+        </Alert>
+        
+        <Alert Type="success" Title="Success!" CssClass="mt-2">
+            Your changes have been saved successfully.
+        </Alert>
+
+        <Alert Type="warning" Title="Warning" CssClass="mt-2">
+            Please review your input before continuing.
+        </Alert>
+
+        <Alert Type="error" Title="Error" CssClass="mt-2">
+            An error occurred while processing your request.
+        </Alert>
+    </InfoCard>
+
+    <InfoCard Title="Toasts" CssClass="mt-3">
+        <p style="margin-bottom: 1rem;">Click buttons to show toast notifications:</p>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <PrimaryButton OnClick="@(() => ShowToast("info"))">Info Toast</PrimaryButton>
+            <PrimaryButton OnClick="@(() => ShowToast("success"))">Success Toast</PrimaryButton>
+            <PrimaryButton OnClick="@(() => ShowToast("warning"))">Warning Toast</PrimaryButton>
+            <PrimaryButton OnClick="@(() => ShowToast("error"))">Error Toast</PrimaryButton>
+        </div>
+    </InfoCard>
+
+    @if (showToast)
+    {
+        <Toast Type="@toastType" Title="@toastTitle" Message="@toastMessage" IsVisible="@showToast" OnClose="@HideToast" />
+    }
+
+    <InfoCard Title="Loading Spinner" CssClass="mt-3">
+        <LoadingSpinner Message="Loading data..." />
+        
+        <div style="margin-top: 2rem;">
+            <LoadingSpinner />
+        </div>
+    </InfoCard>
+
+    <InfoCard Title="Progress Bars" CssClass="mt-3">
+        <ProgressBar Label="Upload Progress" Value="@uploadProgress" Type="primary" />
+        <ProgressBar Label="Download" Value="75" Type="success" CssClass="mt-2" />
+        <ProgressBar Label="Processing" Value="50" Type="warning" CssClass="mt-2" />
+        <ProgressBar Label="Memory Usage" Value="90" Type="error" CssClass="mt-2" />
+        
+        <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+            <PrimaryButton OnClick="@IncreaseProgress">Increase</PrimaryButton>
+            <SecondaryButton OnClick="@DecreaseProgress">Decrease</SecondaryButton>
+            <SecondaryButton OnClick="@ResetProgress">Reset</SecondaryButton>
+        </div>
+    </InfoCard>
+
+</div>
+
+@code {
+    private bool showToast = false;
+    private string toastType = "info";
+    private string toastTitle = "";
+    private string toastMessage = "";
+    private int uploadProgress = 35;
+
+    private void ShowToast(string type)
+    {
+        toastType = type;
+        toastTitle = type switch
+        {
+            "success" => "Success!",
+            "warning" => "Warning",
+            "error" => "Error",
+            _ => "Information"
+        };
+        toastMessage = type switch
+        {
+            "success" => "Operation completed successfully.",
+            "warning" => "Please check your settings.",
+            "error" => "Something went wrong.",
+            _ => "This is an informational message."
+        };
+        showToast = true;
+    }
+
+    private void HideToast()
+    {
+        showToast = false;
+    }
+
+    private void IncreaseProgress()
+    {
+        if (uploadProgress < 100)
+            uploadProgress += 10;
+    }
+
+    private void DecreaseProgress()
+    {
+        if (uploadProgress > 0)
+            uploadProgress -= 10;
+    }
+
+    private void ResetProgress()
+    {
+        uploadProgress = 0;
+    }
+}
