@@ -1,0 +1,65 @@
+@model IEnumerable<ExpenseTracker.Mvc.Models.Budget>
+
+@{
+    ViewData["Title"] = "Budgets";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Budgets</h1>
+        <a asp-action="Create" class="btn btn-primary">Create New Budget</a>
+    </div>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            var totalSpent = ViewData[$"TotalSpent_{item.Id}"] as decimal? ?? 0;
+            var percentUsed = item.TotalAmount > 0 ? (totalSpent / item.TotalAmount) * 100 : 0;
+            
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="text-muted mb-1">
+                            @item.StartDate.ToString("MMM dd, yyyy") - @item.EndDate.ToString("MMM dd, yyyy")
+                        </p>
+                        
+                        <div class="mt-3 mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Total Budget:</span>
+                                <strong>@item.TotalAmount.ToString("C")</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Total Spent:</span>
+                                <strong>@totalSpent.ToString("C")</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Remaining:</span>
+                                <strong class="@(item.TotalAmount - totalSpent < 0 ? "text-danger" : "text-success")">
+                                    @((item.TotalAmount - totalSpent).ToString("C"))
+                                </strong>
+                            </div>
+                            
+                            <div class="progress" style="height: 25px;">
+                                <div class="progress-bar @(percentUsed > 90 ? "bg-danger" : percentUsed > 75 ? "bg-warning" : "bg-success")" 
+                                     role="progressbar" 
+                                     style="width: @Math.Min(percentUsed, 100)%;" 
+                                     aria-valuenow="@percentUsed" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    @percentUsed.ToString("F1")%
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
