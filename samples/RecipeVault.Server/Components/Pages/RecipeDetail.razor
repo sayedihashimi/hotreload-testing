@@ -1,0 +1,75 @@
+@page "/recipes/{id:int}"
+@using RecipeVault.Server.Data.Services
+@using RecipeVault.Server.Data.Models
+@inject IRecipeService RecipeService
+@inject NavigationManager Navigation
+
+<PageTitle>@(recipe?.Name ?? "Recipe") - RecipeVault</PageTitle>
+
+@if (recipe == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="recipe-detail">
+        <div class="recipe-header">
+            <div class="recipe-header-content">
+                <h1>@recipe.Name</h1>
+                <p class="recipe-description">@recipe.Description</p>
+                <div class="recipe-meta">
+                    <TimeBadge PrepMinutes="@recipe.PrepTimeMinutes" CookMinutes="@recipe.CookTimeMinutes" />
+                    <DifficultyStars Difficulty="@recipe.Difficulty" />
+                    <span class="servings">🍽️ Servings: @recipe.Servings</span>
+                </div>
+                <div class="recipe-tags">
+                    @foreach (var tag in recipe.RecipeTags.Select(rt => rt.Tag))
+                    {
+                        <span class="tag">@tag.Name</span>
+                    }
+                </div>
+                <div class="recipe-actions">
+                    <a href="/recipes/@recipe.Id/edit" class="btn btn-secondary">Edit Recipe</a>
+                    <button @onclick="DeleteRecipe" class="btn btn-danger">Delete</button>
+                    <a href="/recipes" class="btn btn-outline">Back to Recipes</a>
+                </div>
+            </div>
+            <div class="recipe-header-image">
+                <img src="@recipe.ImageUrl" alt="@recipe.Name" />
+            </div>
+        </div>
+
+        <div class="recipe-content">
+            <div class="recipe-section">
+                <IngredientList Ingredients="@recipe.Ingredients" />
+            </div>
+            <div class="recipe-section">
+                <InstructionSteps Instructions="@recipe.Instructions" />
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Recipe? recipe;
+
+    protected override async Task OnInitializedAsync()
+    {
+        recipe = await RecipeService.GetRecipeByIdAsync(Id);
+    }
+
+    private async Task DeleteRecipe()
+    {
+        if (recipe == null) return;
+
+        var confirmed = true;
+        if (confirmed)
+        {
+            await RecipeService.DeleteRecipeAsync(recipe.Id);
+            Navigation.NavigateTo("/recipes");
+        }
+    }
+}

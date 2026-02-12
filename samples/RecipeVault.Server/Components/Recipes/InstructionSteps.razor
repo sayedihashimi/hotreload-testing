@@ -1,0 +1,19 @@
+@using RecipeVault.Server.Data.Models
+
+<div class="instruction-steps">
+    <h4>Instructions</h4>
+    <ol>
+        @foreach (var instruction in Instructions.OrderBy(i => i.StepNumber))
+        {
+            <li class="instruction-step">
+                <div class="step-number">Step @instruction.StepNumber</div>
+                <p>@instruction.Text</p>
+            </li>
+        }
+    </ol>
+</div>
+
+@code {
+    [Parameter]
+    public ICollection<Instruction> Instructions { get; set; } = new List<Instruction>();
+}

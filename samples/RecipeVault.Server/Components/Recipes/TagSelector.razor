@@ -1,0 +1,41 @@
+@using RecipeVault.Server.Data.Models
+
+<div class="tag-selector">
+    <h4>Tags</h4>
+    <div class="tag-options">
+        @foreach (var tag in AvailableTags)
+        {
+            <label class="tag-option">
+                <input type="checkbox" 
+                       checked="@SelectedTagIds.Contains(tag.Id)"
+                       @onchange="@(e => ToggleTag(tag.Id, (bool)e.Value!))" />
+                <span>@tag.Name</span>
+            </label>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<Tag> AvailableTags { get; set; } = new();
+
+    [Parameter]
+    public List<int> SelectedTagIds { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<List<int>> SelectedTagIdsChanged { get; set; }
+
+    private async Task ToggleTag(int tagId, bool isChecked)
+    {
+        if (isChecked && !SelectedTagIds.Contains(tagId))
+        {
+            SelectedTagIds.Add(tagId);
+        }
+        else if (!isChecked && SelectedTagIds.Contains(tagId))
+        {
+            SelectedTagIds.Remove(tagId);
+        }
+
+        await SelectedTagIdsChanged.InvokeAsync(SelectedTagIds);
+    }
+}

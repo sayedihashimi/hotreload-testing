@@ -1,0 +1,134 @@
+@page "/meal-planner"
+@using RecipeVault.Server.Data.Services
+@using RecipeVault.Server.Data.Models
+@inject IMealPlanService MealPlanService
+@inject IRecipeService RecipeService
+
+<PageTitle>Meal Planner - RecipeVault</PageTitle>
+
+<div class="meal-planner-page">
+    <div class="page-header">
+        <h1>Weekly Meal Planner</h1>
+        <div class="week-navigation">
+            <button @onclick="PreviousWeek" class="btn btn-secondary">← Previous Week</button>
+            <span class="current-week">@startOfWeek.ToString("MMM dd, yyyy") - @startOfWeek.AddDays(6).ToString("MMM dd, yyyy")</span>
+            <button @onclick="NextWeek" class="btn btn-secondary">Next Week →</button>
+        </div>
+    </div>
+
+    @if (mealPlans == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <div class="meal-planner-grid">
+            @for (int i = 0; i < 7; i++)
+            {
+                var date = startOfWeek.AddDays(i);
+                var dayPlans = mealPlans.Where(mp => mp.PlannedDate.Date == date.Date).ToList();
+
+                <div class="day-column">
+                    <h3>@date.ToString("ddd, MMM dd")</h3>
+                    
+                    @foreach (var mealType in new[] { "Breakfast", "Lunch", "Dinner" })
+                    {
+                        var meal = dayPlans.FirstOrDefault(mp => mp.MealType == mealType);
+                        <div class="meal-slot">
+                            <h4>@mealType</h4>
+                            @if (meal != null)
+                            {
+                                <div class="planned-meal">
+                                    <a href="/recipes/@meal.RecipeId">@meal.Recipe.Name</a>
+                                    <button @onclick="() => RemoveMeal(meal.Id)" class="btn btn-sm btn-danger">×</button>
+                                </div>
+                            }
+                            else
+                            {
+                                <button @onclick="() => ShowRecipeSelector(date, mealType)" class="btn btn-sm btn-outline">+ Add Recipe</button>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        @if (showSelector)
+        {
+            <div class="recipe-selector-modal">
+                <div class="modal-content">
+                    <h3>Select Recipe for @selectedMealType on @selectedDate.ToString("MMM dd")</h3>
+                    <div class="recipe-list">
+                        @foreach (var recipe in allRecipes)
+                        {
+                            <div class="recipe-option" @onclick="() => AddMeal(recipe.Id)">
+                                <img src="@recipe.ImageUrl" alt="@recipe.Name" />
+                                <span>@recipe.Name</span>
+                            </div>
+                        }
+                    </div>
+                    <button @onclick="() => showSelector = false" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    private DateTime startOfWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+    private List<MealPlan>? mealPlans;
+    private List<Recipe> allRecipes = new();
+    private bool showSelector = false;
+    private DateTime selectedDate;
+    private string selectedMealType = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMealPlans();
+        allRecipes = await RecipeService.GetAllRecipesAsync();
+    }
+
+    private async Task LoadMealPlans()
+    {
+        mealPlans = await MealPlanService.GetMealPlansForWeekAsync(startOfWeek);
+    }
+
+    private async Task PreviousWeek()
+    {
+        startOfWeek = startOfWeek.AddDays(-7);
+        await LoadMealPlans();
+    }
+
+    private async Task NextWeek()
+    {
+        startOfWeek = startOfWeek.AddDays(7);
+        await LoadMealPlans();
+    }
+
+    private void ShowRecipeSelector(DateTime date, string mealType)
+    {
+        selectedDate = date;
+        selectedMealType = mealType;
+        showSelector = true;
+    }
+
+    private async Task AddMeal(int recipeId)
+    {
+        var mealPlan = new MealPlan
+        {
+            RecipeId = recipeId,
+            PlannedDate = selectedDate,
+            MealType = selectedMealType
+        };
+
+        await MealPlanService.AddMealPlanAsync(mealPlan);
+        await LoadMealPlans();
+        showSelector = false;
+    }
+
+    private async Task RemoveMeal(int mealPlanId)
+    {
+        await MealPlanService.RemoveMealPlanAsync(mealPlanId);
+        await LoadMealPlans();
+    }
+}

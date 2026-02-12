@@ -1,7 +1,63 @@
 ﻿@page "/"
+@using RecipeVault.Server.Data.Services
+@using RecipeVault.Server.Data.Models
+@inject IRecipeService RecipeService
 
-<PageTitle>Home</PageTitle>
+<PageTitle>RecipeVault - Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="home-page">
+    <div class="hero">
+        <h1>Welcome to RecipeVault</h1>
+        <p>Your personal recipe collection and meal planning companion</p>
+        <a href="/recipes" class="btn btn-primary btn-lg">Browse Recipes</a>
+    </div>
 
-Welcome to your new app.
+    <div class="featured-section">
+        <h2>Featured Recipes</h2>
+        @if (featuredRecipes == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else if (featuredRecipes.Count == 0)
+        {
+            <p>No recipes found. <a href="/recipes/new">Add your first recipe!</a></p>
+        }
+        else
+        {
+            <div class="recipe-grid">
+                @foreach (var recipe in featuredRecipes)
+                {
+                    <RecipeCard Recipe="@recipe" />
+                }
+            </div>
+        }
+    </div>
+
+    <div class="quick-links">
+        <div class="quick-link-card">
+            <h3>📖 Browse Recipes</h3>
+            <p>Explore your entire recipe collection</p>
+            <a href="/recipes" class="btn btn-secondary">View All</a>
+        </div>
+        <div class="quick-link-card">
+            <h3>➕ Add Recipe</h3>
+            <p>Create a new recipe</p>
+            <a href="/recipes/new" class="btn btn-secondary">Create New</a>
+        </div>
+        <div class="quick-link-card">
+            <h3>📅 Meal Planner</h3>
+            <p>Plan your weekly meals</p>
+            <a href="/meal-planner" class="btn btn-secondary">Plan Meals</a>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Recipe> featuredRecipes = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var allRecipes = await RecipeService.GetAllRecipesAsync();
+        featuredRecipes = allRecipes.Take(3).ToList();
+    }
+}

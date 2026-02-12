@@ -1,0 +1,25 @@
+@using RecipeVault.Server.Data.Models
+
+<div class="recipe-card">
+    <img src="@Recipe.ImageUrl" alt="@Recipe.Name" class="recipe-card-image" />
+    <div class="recipe-card-content">
+        <h3>@Recipe.Name</h3>
+        <p class="recipe-description">@Recipe.Description</p>
+        <div class="recipe-meta">
+            <TimeBadge PrepMinutes="@Recipe.PrepTimeMinutes" CookMinutes="@Recipe.CookTimeMinutes" />
+            <DifficultyStars Difficulty="@Recipe.Difficulty" />
+        </div>
+        <div class="recipe-tags">
+            @foreach (var tag in Recipe.RecipeTags.Select(rt => rt.Tag))
+            {
+                <span class="tag">@tag.Name</span>
+            }
+        </div>
+        <a href="/recipes/@Recipe.Id" class="btn btn-primary">View Recipe</a>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Recipe Recipe { get; set; } = null!;
+}

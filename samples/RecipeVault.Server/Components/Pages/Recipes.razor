@@ -1,0 +1,100 @@
+@page "/recipes"
+@using RecipeVault.Server.Data.Services
+@using RecipeVault.Server.Data.Models
+@inject IRecipeService RecipeService
+@inject ISearchService SearchService
+
+<PageTitle>Recipes - RecipeVault</PageTitle>
+
+<div class="recipes-page">
+    <div class="page-header">
+        <h1>All Recipes</h1>
+        <a href="/recipes/new" class="btn btn-primary">Add New Recipe</a>
+    </div>
+
+    <div class="search-filter-bar">
+        <div class="search-box">
+            <input type="text" 
+                   @bind="searchQuery" 
+                   @bind:event="oninput"
+                   @onkeyup="HandleSearch"
+                   placeholder="Search recipes..." 
+                   class="form-control" />
+        </div>
+        
+        <div class="filter-section">
+            <label>Filter by tags:</label>
+            <TagSelector AvailableTags="@allTags" 
+                        SelectedTagIds="@selectedTagIds" 
+                        SelectedTagIdsChanged="@HandleTagFilterChanged" />
+        </div>
+    </div>
+
+    @if (filteredRecipes == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else if (filteredRecipes.Count == 0)
+    {
+        <div class="empty-state">
+            <p>No recipes found.</p>
+            <a href="/recipes/new" class="btn btn-primary">Add your first recipe!</a>
+        </div>
+    }
+    else
+    {
+        <div class="recipe-grid">
+            @foreach (var recipe in filteredRecipes)
+            {
+                <RecipeCard Recipe="@recipe" />
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<Recipe> allRecipes = new();
+    private List<Recipe> filteredRecipes = new();
+    private List<Tag> allTags = new();
+    private string searchQuery = string.Empty;
+    private List<int> selectedTagIds = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        allRecipes = await RecipeService.GetAllRecipesAsync();
+        filteredRecipes = allRecipes;
+        allTags = await SearchService.GetAllTagsAsync();
+    }
+
+    private async Task HandleSearch()
+    {
+        await ApplyFilters();
+    }
+
+    private async Task HandleTagFilterChanged(List<int> tagIds)
+    {
+        selectedTagIds = tagIds;
+        await ApplyFilters();
+    }
+
+    private async Task ApplyFilters()
+    {
+        var results = allRecipes.AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(searchQuery))
+        {
+            var lowerQuery = searchQuery.ToLower();
+            results = results.Where(r => 
+                r.Name.ToLower().Contains(lowerQuery) || 
+                r.Description.ToLower().Contains(lowerQuery));
+        }
+
+        if (selectedTagIds.Any())
+        {
+            results = results.Where(r => 
+                r.RecipeTags.Any(rt => selectedTagIds.Contains(rt.TagId)));
+        }
+
+        filteredRecipes = results.ToList();
+    }
+}

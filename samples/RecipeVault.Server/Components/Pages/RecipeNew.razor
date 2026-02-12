@@ -1,0 +1,149 @@
+@page "/recipes/new"
+@using RecipeVault.Server.Data.Services
+@using RecipeVault.Server.Data.Models
+@inject IRecipeService RecipeService
+@inject ISearchService SearchService
+@inject NavigationManager Navigation
+
+<PageTitle>New Recipe - RecipeVault</PageTitle>
+
+<div class="recipe-form-page">
+    <h1>Create New Recipe</h1>
+
+    <EditForm Model="@recipe" OnValidSubmit="@HandleSubmit">
+        <div class="form-group">
+            <label>Recipe Name</label>
+            <InputText @bind-Value="recipe.Name" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <InputTextArea @bind-Value="recipe.Description" class="form-control" rows="3" />
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Prep Time (minutes)</label>
+                <InputNumber @bind-Value="recipe.PrepTimeMinutes" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Cook Time (minutes)</label>
+                <InputNumber @bind-Value="recipe.CookTimeMinutes" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Servings</label>
+                <InputNumber @bind-Value="recipe.Servings" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Difficulty</label>
+            <InputSelect @bind-Value="recipe.Difficulty" class="form-control">
+                <option value="@DifficultyLevel.Easy">Easy</option>
+                <option value="@DifficultyLevel.Medium">Medium</option>
+                <option value="@DifficultyLevel.Hard">Hard</option>
+                <option value="@DifficultyLevel.Expert">Expert</option>
+            </InputSelect>
+        </div>
+
+        <div class="form-group">
+            <label>Image URL</label>
+            <InputText @bind-Value="recipe.ImageUrl" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Tags</label>
+            <TagSelector AvailableTags="@allTags" 
+                        SelectedTagIds="@selectedTagIds" 
+                        SelectedTagIdsChanged="@((tagIds) => selectedTagIds = tagIds)" />
+        </div>
+
+        <div class="form-group">
+            <label>Ingredients</label>
+            @foreach (var ingredient in ingredients)
+            {
+                <div class="ingredient-input">
+                    <input @bind="ingredient.Name" placeholder="Ingredient" class="form-control" />
+                    <input @bind="ingredient.Quantity" type="number" step="0.01" placeholder="Qty" class="form-control" />
+                    <input @bind="ingredient.Unit" placeholder="Unit" class="form-control" />
+                    <button type="button" @onclick="() => RemoveIngredient(ingredient)" class="btn btn-sm btn-danger">Remove</button>
+                </div>
+            }
+            <button type="button" @onclick="AddIngredient" class="btn btn-secondary">Add Ingredient</button>
+        </div>
+
+        <div class="form-group">
+            <label>Instructions</label>
+            @foreach (var instruction in instructions)
+            {
+                <div class="instruction-input">
+                    <span class="step-number">Step @instruction.StepNumber</span>
+                    <textarea @bind="instruction.Text" placeholder="Instruction text" class="form-control" rows="2"></textarea>
+                    <button type="button" @onclick="() => RemoveInstruction(instruction)" class="btn btn-sm btn-danger">Remove</button>
+                </div>
+            }
+            <button type="button" @onclick="AddInstruction" class="btn btn-secondary">Add Instruction</button>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Create Recipe</button>
+            <a href="/recipes" class="btn btn-outline">Cancel</a>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private Recipe recipe = new() 
+    { 
+        Servings = 4, 
+        Difficulty = DifficultyLevel.Easy,
+        ImageUrl = "https://picsum.photos/seed/recipe/400/300"
+    };
+    private List<Tag> allTags = new();
+    private List<int> selectedTagIds = new();
+    private List<Ingredient> ingredients = new();
+    private List<Instruction> instructions = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        allTags = await SearchService.GetAllTagsAsync();
+        AddIngredient();
+        AddInstruction();
+    }
+
+    private void AddIngredient()
+    {
+        ingredients.Add(new Ingredient());
+    }
+
+    private void RemoveIngredient(Ingredient ingredient)
+    {
+        ingredients.Remove(ingredient);
+    }
+
+    private void AddInstruction()
+    {
+        instructions.Add(new Instruction { StepNumber = instructions.Count + 1 });
+    }
+
+    private void RemoveInstruction(Instruction instruction)
+    {
+        instructions.Remove(instruction);
+        for (int i = 0; i < instructions.Count; i++)
+        {
+            instructions[i].StepNumber = i + 1;
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        recipe.Ingredients = ingredients.Where(i => !string.IsNullOrWhiteSpace(i.Name)).ToList();
+        recipe.Instructions = instructions.Where(i => !string.IsNullOrWhiteSpace(i.Text)).ToList();
+        recipe.RecipeTags = selectedTagIds.Select(tagId => new RecipeTag { TagId = tagId }).ToList();
+
+        var created = await RecipeService.CreateRecipeAsync(recipe);
+        Navigation.NavigateTo($"/recipes/{created.Id}");
+    }
+}

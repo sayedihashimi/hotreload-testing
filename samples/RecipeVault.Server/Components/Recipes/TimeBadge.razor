@@ -1,0 +1,25 @@
+<div class="time-badge">
+    <span class="time-item">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zm0 2a6 6 0 1 0 0 12A6 6 0 0 0 8 2zm1 2v5l3 3-1 1-3.5-3.5V4h1.5z"/>
+        </svg>
+        Prep: @PrepMinutes min
+    </span>
+    <span class="time-item">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M2 2h12v2H2V2zm0 3h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5zm2 2v6h8V7H4z"/>
+        </svg>
+        Cook: @CookMinutes min
+    </span>
+    <span class="time-item total-time">
+        Total: @(PrepMinutes + CookMinutes) min
+    </span>
+</div>
+
+@code {
+    [Parameter]
+    public int PrepMinutes { get; set; }
+
+    [Parameter]
+    public int CookMinutes { get; set; }
+}
