@@ -1,0 +1,87 @@
+@page
+@model BookBuddy.RazorPages.Pages.Books.CreateModel
+@{
+    ViewData["Title"] = "Add New Book";
+}
+
+<h1>Add New Book</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="mb-3">
+                <label asp-for="Book.Title" class="form-label"></label>
+                <input asp-for="Book.Title" class="form-control" />
+                <span asp-validation-for="Book.Title" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Book.Author" class="form-label"></label>
+                <input asp-for="Book.Author" class="form-control" />
+                <span asp-validation-for="Book.Author" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Book.Genre" class="form-label"></label>
+                <input asp-for="Book.Genre" class="form-control" />
+                <span asp-validation-for="Book.Genre" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Book.Pages" class="form-label"></label>
+                <input asp-for="Book.Pages" class="form-control" type="number" />
+                <span asp-validation-for="Book.Pages" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Book.Status" class="form-label"></label>
+                <select asp-for="Book.Status" class="form-select" asp-items="Html.GetEnumSelectList<BookBuddy.RazorPages.Models.ReadingStatus>()">
+                </select>
+                <span asp-validation-for="Book.Status" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Book.StartedDate" class="form-label"></label>
+                <input asp-for="Book.StartedDate" class="form-control" type="date" />
+                <span asp-validation-for="Book.StartedDate" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Book.CompletedDate" class="form-label"></label>
+                <input asp-for="Book.CompletedDate" class="form-control" type="date" />
+                <span asp-validation-for="Book.CompletedDate" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Book.Rating" class="form-label"></label>
+                <select asp-for="Book.Rating" class="form-select">
+                    <option value="">Not Rated</option>
+                    <option value="1">⭐ 1 Star</option>
+                    <option value="2">⭐⭐ 2 Stars</option>
+                    <option value="3">⭐⭐⭐ 3 Stars</option>
+                    <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                    <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+                </select>
+                <span asp-validation-for="Book.Rating" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Book.Notes" class="form-label"></label>
+                <textarea asp-for="Book.Notes" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Book.Notes" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a href="/Books" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

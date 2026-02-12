@@ -1,0 +1,65 @@
+@page
+@model BookBuddy.RazorPages.Pages.Books.IndexModel
+@{
+    ViewData["Title"] = "Books";
+}
+
+<h1>📚 My Books</h1>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <a href="/Books/Create" class="btn btn-success mb-3">Add New Book</a>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label for="status" class="form-label">Filter by Status</label>
+                <select name="status" id="status" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    <option value="ToRead" selected="@(Model.StatusFilter == "ToRead")">To Read</option>
+                    <option value="Reading" selected="@(Model.StatusFilter == "Reading")">Reading</option>
+                    <option value="Completed" selected="@(Model.StatusFilter == "Completed")">Completed</option>
+                    <option value="OnHold" selected="@(Model.StatusFilter == "OnHold")">On Hold</option>
+                    <option value="Abandoned" selected="@(Model.StatusFilter == "Abandoned")">Abandoned</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="genre" class="form-label">Filter by Genre</label>
+                <select name="genre" id="genre" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Genres</option>
+                    @foreach (var genre in Model.Genres)
+                    {
+                        <option value="@genre" selected="@(Model.GenreFilter == genre)">@genre</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">&nbsp;</label>
+                <div>
+                    <a href="/Books" class="btn btn-secondary">Clear Filters</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.Books.Any())
+{
+    <div class="row">
+        @foreach (var book in Model.Books)
+        {
+            <div class="col-md-4 mb-3">
+                <partial name="_BookCard" model="book" />
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <p>No books found. <a href="/Books/Create">Add your first book!</a></p>
+    </div>
+}

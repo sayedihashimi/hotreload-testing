@@ -1,0 +1,38 @@
+@model BookBuddy.RazorPages.Models.Book
+
+<div class="card h-100">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Title</h5>
+        <h6 class="card-subtitle mb-2 text-muted">by @Model.Author</h6>
+        
+        @if (!string.IsNullOrEmpty(Model.Genre))
+        {
+            <p class="card-text"><small class="text-muted">@Model.Genre</small></p>
+        }
+        
+        <p class="card-text">
+            <span class="badge 
+                @(Model.Status == BookBuddy.RazorPages.Models.ReadingStatus.Completed ? "bg-success" : 
+                  Model.Status == BookBuddy.RazorPages.Models.ReadingStatus.Reading ? "bg-primary" : 
+                  Model.Status == BookBuddy.RazorPages.Models.ReadingStatus.ToRead ? "bg-secondary" : 
+                  Model.Status == BookBuddy.RazorPages.Models.ReadingStatus.OnHold ? "bg-warning" : 
+                  "bg-dark")">
+                @Model.Status
+            </span>
+            
+            @if (Model.Pages.HasValue)
+            {
+                <span class="ms-2">@Model.Pages pages</span>
+            }
+        </p>
+        
+        @if (Model.Rating.HasValue)
+        {
+            <p class="card-text">@string.Concat(Enumerable.Repeat("⭐", Model.Rating.Value))</p>
+        }
+    </div>
+    <div class="card-footer">
+        <a href="/Books/Details/@Model.Id" class="btn btn-sm btn-primary">View Details</a>
+        <a href="/Books/Edit/@Model.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+    </div>
+</div>
