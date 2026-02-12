@@ -1,0 +1,139 @@
+@page "/recipes/create"
+@using Microsoft.EntityFrameworkCore
+@using RecipeVault.Auto.Data
+@using RecipeVault.Auto.Models
+@inject RecipeContext Context
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Create Recipe - RecipeVault</PageTitle>
+
+<div class="create-recipe">
+    <h1>➕ Create New Recipe</h1>
+    
+    <RenderModeIndicator />
+    
+    <EditForm Model="@newRecipe" OnValidSubmit="@HandleSubmit" FormName="createRecipe">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        
+        <div class="form-group">
+            <label>Recipe Name:</label>
+            <InputText @bind-Value="newRecipe.Name" class="form-control" />
+        </div>
+        
+        <div class="form-group">
+            <label>Description:</label>
+            <InputTextArea @bind-Value="newRecipe.Description" class="form-control" rows="3" />
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>Prep Time (minutes):</label>
+                <InputNumber @bind-Value="newRecipe.PrepTimeMinutes" class="form-control" />
+            </div>
+            
+            <div class="form-group">
+                <label>Cook Time (minutes):</label>
+                <InputNumber @bind-Value="newRecipe.CookTimeMinutes" class="form-control" />
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>Servings:</label>
+                <InputNumber @bind-Value="newRecipe.Servings" class="form-control" />
+            </div>
+            
+            <div class="form-group">
+                <label>Difficulty:</label>
+                <InputSelect @bind-Value="newRecipe.Difficulty" class="form-control">
+                    <option value="@DifficultyLevel.Easy">Easy</option>
+                    <option value="@DifficultyLevel.Medium">Medium</option>
+                    <option value="@DifficultyLevel.Hard">Hard</option>
+                    <option value="@DifficultyLevel.Expert">Expert</option>
+                </InputSelect>
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Create Recipe</button>
+            <a href="/recipes" class="btn btn-secondary">Cancel</a>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Recipe newRecipe { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        newRecipe ??= new Recipe();
+    }
+
+    private async Task HandleSubmit()
+    {
+        newRecipe.ImageUrl = "/images/default.jpg";
+        Context.Recipes.Add(newRecipe);
+        await Context.SaveChangesAsync();
+        Navigation.NavigateTo("/recipes");
+    }
+}
+
+<style>
+    .create-recipe {
+        max-width: 700px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.25rem;
+        font-weight: 500;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    
+    .form-actions {
+        margin-top: 2rem;
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.5rem;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-primary {
+        background: #007bff;
+        color: white;
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+</style>
