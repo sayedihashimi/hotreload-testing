@@ -1,8 +1,126 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
+    var totalSpent = (decimal)ViewBag.TotalSpent;
+    var budget = (ExpenseTracker.Mvc.Models.Budget?)ViewBag.Budget;
+    var categorySpending = (Dictionary<ExpenseTracker.Mvc.Models.Category, decimal>)ViewBag.CategorySpending;
+    var recentExpenses = (IEnumerable<ExpenseTracker.Mvc.Models.Expense>)ViewBag.RecentExpenses;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row">
+    <div class="col-md-12">
+        <h1>Expense Tracker Dashboard</h1>
+        <p class="lead">Track your spending and stay within budget</p>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Total Spent This Month</h5>
+                <h2 class="text-primary">@totalSpent.ToString("C")</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Monthly Budget</h5>
+                <h2 class="text-info">@(budget?.TotalBudget.ToString("C") ?? "Not Set")</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Remaining</h5>
+                @if (budget != null)
+                {
+                    var remaining = budget.TotalBudget - totalSpent;
+                    var colorClass = remaining >= 0 ? "text-success" : "text-danger";
+                    <h2 class="@colorClass">@remaining.ToString("C")</h2>
+                }
+                else
+                {
+                    <h2 class="text-muted">N/A</h2>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Spending by Category</h5>
+            </div>
+            <div class="card-body">
+                @if (categorySpending.Any())
+                {
+                    <table class="table">
+                        <tbody>
+                            @foreach (var item in categorySpending.OrderByDescending(x => x.Value))
+                            {
+                                <tr>
+                                    <td>
+                                        <span style="font-size: 1.5em;">@item.Key.Icon</span>
+                                        @item.Key.Name
+                                    </td>
+                                    <td class="text-end">@item.Value.ToString("C")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted">No expenses this month</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Recent Expenses</h5>
+            </div>
+            <div class="card-body">
+                @if (recentExpenses.Any())
+                {
+                    <table class="table">
+                        <tbody>
+                            @foreach (var expense in recentExpenses)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@expense.Description</strong><br />
+                                        <small class="text-muted">@expense.Date.ToString("MMM dd, yyyy")</small>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="badge" style="background-color: @expense.Category?.Color">
+                                            @expense.Category?.Icon @expense.Category?.Name
+                                        </span><br />
+                                        <strong>@expense.Amount.ToString("C")</strong>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <a asp-controller="Expenses" asp-action="Index" class="btn btn-sm btn-outline-primary">View All</a>
+                }
+                else
+                {
+                    <p class="text-muted">No recent expenses</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <a asp-controller="Expenses" asp-action="Create" class="btn btn-primary">Add New Expense</a>
+        <a asp-controller="Budgets" asp-action="Create" class="btn btn-outline-secondary">Set Budget</a>
+    </div>
 </div>

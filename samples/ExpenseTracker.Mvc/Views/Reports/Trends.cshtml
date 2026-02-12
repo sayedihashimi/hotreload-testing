@@ -1,0 +1,81 @@
+@model Dictionary<int, decimal>
+
+@{
+    ViewData["Title"] = "Spending Trends";
+    var selectedYear = (int)ViewBag.SelectedYear;
+}
+
+<h1>Spending Trends</h1>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <form method="get" class="row g-3">
+            <div class="col-auto">
+                <label for="year" class="form-label">Year</label>
+                <input type="number" name="year" id="year" class="form-control" value="@selectedYear" />
+            </div>
+            <div class="col-auto">
+                <label class="form-label">&nbsp;</label>
+                <button type="submit" class="btn btn-primary d-block">View Trends</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Monthly Spending for @selectedYear</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Amount</th>
+                            <th>Trend</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var maxAmount = Model.Values.Any() ? Model.Values.Max() : 0;
+                        }
+                        @for (int month = 1; month <= 12; month++)
+                        {
+                            var amount = Model.ContainsKey(month) ? Model[month] : 0;
+                            var barWidth = maxAmount > 0 ? (amount / maxAmount * 100) : 0;
+                            <tr>
+                                <td>@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month)</td>
+                                <td>@amount.ToString("C")</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar bg-primary" 
+                                             role="progressbar" 
+                                             style="width: @barWidth%" 
+                                             aria-valuenow="@amount" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="@maxAmount">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-info">
+                            <td><strong>Total</strong></td>
+                            <td><strong>@Model.Values.Sum().ToString("C")</strong></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Average</strong></td>
+                            <td><strong>@(Model.Values.Any() ? Model.Values.Average().ToString("C") : "$0.00")</strong></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

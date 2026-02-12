@@ -1,0 +1,76 @@
+@model Dictionary<ExpenseTracker.Mvc.Models.Category, decimal>
+
+@{
+    ViewData["Title"] = "Category Report";
+    var selectedMonth = (int)ViewBag.SelectedMonth;
+    var selectedYear = (int)ViewBag.SelectedYear;
+}
+
+<h1>Spending by Category</h1>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <form method="get" class="row g-3">
+            <div class="col-auto">
+                <label for="month" class="form-label">Month</label>
+                <select name="month" id="month" class="form-select">
+                    @for (int i = 1; i <= 12; i++)
+                    {
+                        <option value="@i" selected="@(i == selectedMonth)">
+                            @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-auto">
+                <label for="year" class="form-label">Year</label>
+                <input type="number" name="year" id="year" class="form-control" value="@selectedYear" />
+            </div>
+            <div class="col-auto">
+                <label class="form-label">&nbsp;</label>
+                <button type="submit" class="btn btn-primary d-block">View Report</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (Model.Any())
+        {
+            var total = Model.Sum(x => x.Value);
+            <div class="row">
+                @foreach (var item in Model.OrderByDescending(x => x.Value))
+                {
+                    var percentage = total > 0 ? (item.Value / total * 100) : 0;
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 style="font-size: 3em; text-align: center;">@item.Key.Icon</h3>
+                                <h5 class="card-title text-center">@item.Key.Name</h5>
+                                <h2 class="text-center text-primary">@item.Value.ToString("C")</h2>
+                                <div class="progress">
+                                    <div class="progress-bar" 
+                                         role="progressbar" 
+                                         style="width: @percentage%; background-color: @item.Key.Color" 
+                                         aria-valuenow="@percentage" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                        @percentage.ToString("F1")%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="alert alert-info">
+                <strong>Total Spending: @total.ToString("C")</strong>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning">No expenses for this period</div>
+        }
+    </div>
+</div>

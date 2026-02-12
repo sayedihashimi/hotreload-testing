@@ -1,0 +1,22 @@
+@model (decimal spent, decimal budget)
+
+@{
+    var percentage = Model.budget > 0 ? (Model.spent / Model.budget * 100) : 0;
+    var colorClass = percentage > 100 ? "bg-danger" : (percentage > 80 ? "bg-warning" : "bg-success");
+}
+
+<div class="mb-2">
+    <div class="d-flex justify-content-between mb-1">
+        <span>@Model.spent.ToString("C") / @Model.budget.ToString("C")</span>
+        <span>@percentage.ToString("F1")%</span>
+    </div>
+    <div class="progress">
+        <div class="progress-bar @colorClass" 
+             role="progressbar" 
+             style="width: @Math.Min(percentage, 100)%" 
+             aria-valuenow="@percentage" 
+             aria-valuemin="0" 
+             aria-valuemax="100">
+        </div>
+    </div>
+</div>

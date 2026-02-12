@@ -1,0 +1,52 @@
+@model IEnumerable<ExpenseTracker.Mvc.Models.Expense>
+
+@{
+    ViewData["Title"] = "Expenses";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>Expenses</h1>
+        <a asp-action="Create" class="btn btn-primary mb-3">Add New Expense</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Payment Method</th>
+                    <th>Vendor</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var expense in Model)
+                {
+                    <tr>
+                        <td>@expense.Date.ToString("MMM dd, yyyy")</td>
+                        <td>@expense.Description</td>
+                        <td>
+                            <span class="badge" style="background-color: @expense.Category?.Color">
+                                @expense.Category?.Icon @expense.Category?.Name
+                            </span>
+                        </td>
+                        <td>@expense.Amount.ToString("C")</td>
+                        <td>@expense.PaymentMethod</td>
+                        <td>@expense.Vendor</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@expense.Id" class="btn btn-sm btn-info">Details</a>
+                            <a asp-action="Edit" asp-route-id="@expense.Id" class="btn btn-sm btn-warning">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@expense.Id" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+@model ExpenseTracker.Mvc.Models.Expense
+
+@{
+    ViewData["Title"] = "Expense Details";
+}
+
+<h1>Expense Details</h1>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Date</dt>
+            <dd class="col-sm-9">@Model.Date.ToString("MMM dd, yyyy")</dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@Model.Description</dd>
+
+            <dt class="col-sm-3">Amount</dt>
+            <dd class="col-sm-9">@Model.Amount.ToString("C")</dd>
+
+            <dt class="col-sm-3">Category</dt>
+            <dd class="col-sm-9">
+                <span class="badge" style="background-color: @Model.Category?.Color">
+                    @Model.Category?.Icon @Model.Category?.Name
+                </span>
+            </dd>
+
+            <dt class="col-sm-3">Payment Method</dt>
+            <dd class="col-sm-9">@Model.PaymentMethod</dd>
+
+            <dt class="col-sm-3">Vendor</dt>
+            <dd class="col-sm-9">@Model.Vendor</dd>
+
+            <dt class="col-sm-3">Recurring</dt>
+            <dd class="col-sm-9">
+                @if (Model.IsRecurring)
+                {
+                    <span>Yes (@Model.RecurrenceInterval)</span>
+                }
+                else
+                {
+                    <span>No</span>
+                }
+            </dd>
+
+            @if (!string.IsNullOrEmpty(Model.Notes))
+            {
+                <dt class="col-sm-3">Notes</dt>
+                <dd class="col-sm-9">@Model.Notes</dd>
+            }
+        </dl>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

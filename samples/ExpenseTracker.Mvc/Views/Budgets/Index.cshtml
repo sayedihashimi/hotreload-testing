@@ -1,0 +1,56 @@
+@model IEnumerable<ExpenseTracker.Mvc.Models.Budget>
+
+@{
+    ViewData["Title"] = "Budgets";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>Budgets</h1>
+        <a asp-action="Create" class="btn btn-primary mb-3">Create New Budget</a>
+    </div>
+</div>
+
+<div class="row">
+    @foreach (var budget in Model)
+    {
+        <div class="col-md-12 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5>@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(budget.Month) @budget.Year</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Total Budget: @budget.TotalBudget.ToString("C")</h6>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Budgeted</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cb in budget.CategoryBudgets)
+                            {
+                                <tr>
+                                    <td>
+                                        <span style="font-size: 1.2em;">@cb.Category?.Icon</span>
+                                        @cb.Category?.Name
+                                    </td>
+                                    <td>@cb.Amount.ToString("C")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <a asp-action="Edit" asp-route-id="@budget.Id" class="btn btn-sm btn-warning">Edit</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No budgets created yet. <a asp-action="Create">Create your first budget</a>
+    </div>
+}

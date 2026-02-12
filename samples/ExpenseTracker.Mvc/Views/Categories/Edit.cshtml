@@ -1,0 +1,50 @@
+@model ExpenseTracker.Mvc.Models.Category
+
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<h1>Edit Category</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Icon" class="control-label"></label>
+                <input asp-for="Icon" class="form-control" placeholder="Enter emoji, e.g., 🛒" />
+                <span asp-validation-for="Icon" class="text-danger"></span>
+                <small class="form-text text-muted">Enter an emoji to represent this category</small>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Color" class="control-label"></label>
+                <input asp-for="Color" class="form-control" type="color" value="@Model.Color" />
+                <span asp-validation-for="Color" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MonthlyBudget" class="control-label"></label>
+                <input asp-for="MonthlyBudget" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="MonthlyBudget" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

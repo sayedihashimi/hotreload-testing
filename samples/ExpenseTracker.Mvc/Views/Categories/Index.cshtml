@@ -1,0 +1,36 @@
+@model IEnumerable<ExpenseTracker.Mvc.Models.Category>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>Categories</h1>
+        <a asp-action="Create" class="btn btn-primary mb-3">Add New Category</a>
+    </div>
+</div>
+
+<div class="row">
+    @foreach (var category in Model)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <span style="font-size: 2em;">@category.Icon</span>
+                        @category.Name
+                    </h5>
+                    <p class="card-text">
+                        <span class="badge" style="background-color: @category.Color">Color Preview</span>
+                    </p>
+                    @if (category.MonthlyBudget.HasValue)
+                    {
+                        <p class="card-text">Monthly Budget: @category.MonthlyBudget.Value.ToString("C")</p>
+                    }
+                    <a asp-action="Edit" asp-route-id="@category.Id" class="btn btn-sm btn-warning">Edit</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
