@@ -1,0 +1,66 @@
+@page
+@model BookBuddy.RazorPages.Pages.Goals.ProgressModel
+@{
+    ViewData["Title"] = "Goal Progress";
+}
+
+<div class="container">
+    <h1>📊 Goal Progress - @DateTime.Now.Year</h1>
+
+    @if (Model.GoalProgress != null)
+    {
+        <div class="goal-progress-detail">
+            <partial name="_GoalProgress" model="Model.GoalProgress" />
+            
+            <div class="progress-stats">
+                <div class="progress-stat">
+                    <h3>Books Progress</h3>
+                    <div class="stat-large">@Model.GoalProgress.BooksCompleted / @Model.GoalProgress.Goal.TargetBooks</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: @Model.GoalProgress.BooksPercentage%"></div>
+                    </div>
+                    <p>@Model.GoalProgress.BooksPercentage.ToString("F1")% Complete</p>
+                    @if (Model.GoalProgress.BooksGoalMet)
+                    {
+                        <p class="success-message">🎉 Goal achieved!</p>
+                    }
+                    else
+                    {
+                        var remaining = Model.GoalProgress.Goal.TargetBooks - Model.GoalProgress.BooksCompleted;
+                        <p>@remaining books remaining</p>
+                    }
+                </div>
+
+                <div class="progress-stat">
+                    <h3>Pages Progress</h3>
+                    <div class="stat-large">@Model.GoalProgress.PagesCompleted / @Model.GoalProgress.Goal.TargetPages</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: @Model.GoalProgress.PagesPercentage%"></div>
+                    </div>
+                    <p>@Model.GoalProgress.PagesPercentage.ToString("F1")% Complete</p>
+                    @if (Model.GoalProgress.PagesGoalMet)
+                    {
+                        <p class="success-message">🎉 Goal achieved!</p>
+                    }
+                    else
+                    {
+                        var remaining = Model.GoalProgress.Goal.TargetPages - Model.GoalProgress.PagesCompleted;
+                        <p>@remaining pages remaining</p>
+                    }
+                </div>
+            </div>
+
+            <div class="actions">
+                <a asp-page="Index" class="btn btn-secondary">Manage Goals</a>
+                <a asp-page="/ReadingSessions/Log" class="btn btn-primary">Log Reading Session</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <p>No goal set for this year.</p>
+            <a asp-page="Index" class="btn btn-primary">Set a Goal</a>
+        </div>
+    }
+</div>

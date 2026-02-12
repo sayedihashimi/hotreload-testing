@@ -1,0 +1,123 @@
+@page "{id:int}"
+@model BookBuddy.RazorPages.Pages.Books.DetailsModel
+@{
+    ViewData["Title"] = Model.Book?.Title ?? "Book Details";
+}
+
+<div class="container">
+    @if (Model.Book != null)
+    {
+        <div class="book-details">
+            <div class="book-header">
+                <h1>@Model.Book.Title</h1>
+                <div class="book-actions">
+                    <a asp-page="Edit" asp-route-id="@Model.Book.Id" class="btn btn-primary">Edit</a>
+                    <a asp-page="Delete" asp-route-id="@Model.Book.Id" class="btn btn-danger">Delete</a>
+                    <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </div>
+
+            <div class="book-info-grid">
+                <div class="book-cover">
+                    @if (!string.IsNullOrEmpty(Model.Book.CoverImageUrl))
+                    {
+                        <img src="@Model.Book.CoverImageUrl" alt="@Model.Book.Title cover" />
+                    }
+                    else
+                    {
+                        <div class="placeholder-cover">📚</div>
+                    }
+                </div>
+
+                <div class="book-metadata">
+                    <div class="metadata-item">
+                        <label>Author:</label>
+                        <span>@Model.Book.Author</span>
+                    </div>
+                    <div class="metadata-item">
+                        <label>Genre:</label>
+                        <span>@Model.Book.Genre</span>
+                    </div>
+                    <div class="metadata-item">
+                        <label>ISBN:</label>
+                        <span>@Model.Book.ISBN</span>
+                    </div>
+                    <div class="metadata-item">
+                        <label>Pages:</label>
+                        <span>@Model.Book.PageCount</span>
+                    </div>
+                    <div class="metadata-item">
+                        <label>Status:</label>
+                        <span class="status-badge status-@Model.Book.Status.ToString().ToLower()">@Model.Book.Status</span>
+                    </div>
+                    @if (Model.Book.CurrentPage.HasValue)
+                    {
+                        <div class="metadata-item">
+                            <label>Progress:</label>
+                            <partial name="_ReadingProgress" model="Model.Book" />
+                        </div>
+                    }
+                    @if (Model.Book.Rating.HasValue)
+                    {
+                        <div class="metadata-item">
+                            <label>Rating:</label>
+                            <span>@string.Join("", Enumerable.Repeat("⭐", Model.Book.Rating.Value))</span>
+                        </div>
+                    }
+                    @if (Model.Book.StartedDate.HasValue)
+                    {
+                        <div class="metadata-item">
+                            <label>Started:</label>
+                            <span>@Model.Book.StartedDate.Value.ToString("MMM dd, yyyy")</span>
+                        </div>
+                    }
+                    @if (Model.Book.FinishedDate.HasValue)
+                    {
+                        <div class="metadata-item">
+                            <label>Finished:</label>
+                            <span>@Model.Book.FinishedDate.Value.ToString("MMM dd, yyyy")</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.Book.Notes))
+            {
+                <div class="book-notes">
+                    <h3>Notes</h3>
+                    <p>@Model.Book.Notes</p>
+                </div>
+            }
+
+            @if (Model.Book.ReadingSessions?.Any() == true)
+            {
+                <div class="reading-sessions">
+                    <h3>Reading Sessions</h3>
+                    <table class="sessions-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Pages Read</th>
+                                <th>Time Spent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var session in Model.Book.ReadingSessions.OrderByDescending(s => s.Date))
+                            {
+                                <tr>
+                                    <td>@session.Date.ToString("MMM dd, yyyy")</td>
+                                    <td>@session.PagesRead pages</td>
+                                    <td>@session.MinutesSpent minutes</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p>Book not found.</p>
+    }
+</div>

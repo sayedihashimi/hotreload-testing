@@ -1,0 +1,36 @@
+@model BookBuddy.RazorPages.Models.Book
+
+<div class="book-card">
+    <div class="book-card-cover">
+        @if (!string.IsNullOrEmpty(Model.CoverImageUrl))
+        {
+            <img src="@Model.CoverImageUrl" alt="@Model.Title cover" />
+        }
+        else
+        {
+            <div class="placeholder-cover">📚</div>
+        }
+    </div>
+    <div class="book-card-content">
+        <h3 class="book-card-title">
+            <a asp-page="/Books/Details" asp-route-id="@Model.Id">@Model.Title</a>
+        </h3>
+        <p class="book-card-author">by @Model.Author</p>
+        <p class="book-card-genre">@Model.Genre</p>
+        <div class="book-card-status">
+            <span class="status-badge status-@Model.Status.ToString().ToLower()">@Model.Status</span>
+        </div>
+        @if (Model.Status == ReadingStatus.Reading && Model.CurrentPage.HasValue)
+        {
+            <div class="book-card-progress">
+                <partial name="_ReadingProgress" model="Model" />
+            </div>
+        }
+        @if (Model.Rating.HasValue)
+        {
+            <div class="book-card-rating">
+                @string.Join("", Enumerable.Repeat("⭐", Model.Rating.Value))
+            </div>
+        }
+    </div>
+</div>

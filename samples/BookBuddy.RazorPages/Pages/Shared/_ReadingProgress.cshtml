@@ -1,0 +1,14 @@
+@model BookBuddy.RazorPages.Models.Book
+
+@if (Model.CurrentPage.HasValue && Model.PageCount > 0)
+{
+    var percentage = (double)Model.CurrentPage.Value / Model.PageCount * 100;
+    <div class="reading-progress">
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: @percentage%"></div>
+        </div>
+        <div class="progress-text">
+            @Model.CurrentPage / @Model.PageCount pages (@percentage.ToString("F0")%)
+        </div>
+    </div>
+}

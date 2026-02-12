@@ -1,10 +1,74 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "BookBuddy - Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <h1 class="page-title">📚 BookBuddy Dashboard</h1>
+
+    @if (Model.Stats != null)
+    {
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">@Model.Stats.TotalBooks</div>
+                <div class="stat-label">Total Books</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">@Model.Stats.BooksRead</div>
+                <div class="stat-label">Books Finished</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">@Model.Stats.BooksReading</div>
+                <div class="stat-label">Currently Reading</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">@Model.Stats.TotalPagesRead</div>
+                <div class="stat-label">Pages Read</div>
+            </div>
+        </div>
+    }
+
+    <div class="dashboard-content">
+        <div class="dashboard-section">
+            <h2>📖 Currently Reading</h2>
+            @if (Model.CurrentlyReading?.Any() == true)
+            {
+                <div class="books-grid">
+                    @foreach (var book in Model.CurrentlyReading)
+                    {
+                        <partial name="_BookCard" model="book" />
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="empty-state">No books currently being read. <a asp-page="/Books/Index">Browse your library</a>!</p>
+            }
+        </div>
+
+        <div class="dashboard-section">
+            <h2>📊 Reading Goal Progress</h2>
+            @if (Model.GoalProgress != null)
+            {
+                <partial name="_GoalProgress" model="Model.GoalProgress" />
+            }
+            else
+            {
+                <p class="empty-state">No reading goal set for this year. <a asp-page="/Goals/Index">Set a goal</a>!</p>
+            }
+        </div>
+
+        <div class="dashboard-section">
+            <h2>⏱️ Recent Reading Activity</h2>
+            @if (Model.RecentSessions?.Any() == true)
+            {
+                <partial name="_RecentActivity" model="Model.RecentSessions" />
+            }
+            else
+            {
+                <p class="empty-state">No recent reading sessions. <a asp-page="/ReadingSessions/Log">Log a session</a>!</p>
+            }
+        </div>
+    </div>
 </div>

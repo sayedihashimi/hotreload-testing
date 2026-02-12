@@ -1,0 +1,50 @@
+@page
+@model BookBuddy.RazorPages.Pages.ReadingSessions.LogModel
+@{
+    ViewData["Title"] = "Log Reading Session";
+}
+
+<div class="container">
+    <h1>⏱️ Log Reading Session</h1>
+
+    <form method="post" class="book-form">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="Session.BookId"></label>
+            <select asp-for="Session.BookId" class="form-control" asp-items="Model.BookSelectList">
+                <option value="">-- Select a book --</option>
+            </select>
+            <span asp-validation-for="Session.BookId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Session.Date"></label>
+            <input asp-for="Session.Date" class="form-control" type="date" />
+            <span asp-validation-for="Session.Date" class="text-danger"></span>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="Session.PagesRead"></label>
+                <input asp-for="Session.PagesRead" class="form-control" type="number" />
+                <span asp-validation-for="Session.PagesRead" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Session.MinutesSpent"></label>
+                <input asp-for="Session.MinutesSpent" class="form-control" type="number" />
+                <span asp-validation-for="Session.MinutesSpent" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Log Session</button>
+            <a asp-page="History" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

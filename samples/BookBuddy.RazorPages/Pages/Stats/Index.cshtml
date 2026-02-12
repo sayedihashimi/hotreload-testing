@@ -1,0 +1,97 @@
+@page
+@model BookBuddy.RazorPages.Pages.Stats.IndexModel
+@{
+    ViewData["Title"] = "Reading Statistics";
+}
+
+<div class="container">
+    <h1>📈 Reading Statistics</h1>
+
+    @if (Model.Stats != null)
+    {
+        <div class="stats-section">
+            <h2>Overall Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">@Model.Stats.TotalBooks</div>
+                    <div class="stat-label">Total Books</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@Model.Stats.BooksRead</div>
+                    <div class="stat-label">Books Finished</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@Model.Stats.TotalPagesRead</div>
+                    <div class="stat-label">Total Pages Read</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@Model.Stats.TotalMinutesRead</div>
+                    <div class="stat-label">Total Minutes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@Model.Stats.AverageRating.ToString("F1")</div>
+                    <div class="stat-label">Average Rating</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@(Model.Stats.TotalMinutesRead / 60)h @(Model.Stats.TotalMinutesRead % 60)m</div>
+                    <div class="stat-label">Total Reading Time</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <h2>@DateTime.Now.Year Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">@Model.Stats.CurrentYearBooksFinished</div>
+                    <div class="stat-label">Books Finished This Year</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">@Model.Stats.CurrentYearPagesRead</div>
+                    <div class="stat-label">Pages Read This Year</div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.GenreDistribution?.Any() == true)
+        {
+            <div class="stats-section">
+                <h2>Reading by Genre</h2>
+                <div class="genre-chart">
+                    @foreach (var genre in Model.GenreDistribution.OrderByDescending(g => g.Value))
+                    {
+                        var percentage = (double)genre.Value / Model.Stats.TotalBooks * 100;
+                        <div class="genre-item">
+                            <div class="genre-label">@genre.Key (@genre.Value books)</div>
+                            <div class="genre-bar">
+                                <div class="genre-bar-fill" style="width: @percentage%"></div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <div class="stats-section">
+            <h2>Status Breakdown</h2>
+            <div class="status-breakdown">
+                <div class="status-item">
+                    <span class="status-badge status-finished">Finished</span>
+                    <span>@Model.Stats.BooksRead books</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-badge status-reading">Reading</span>
+                    <span>@Model.Stats.BooksReading books</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-badge status-wanttoread">Want to Read</span>
+                    <span>@Model.Stats.BooksWantToRead books</span>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <p class="empty-state">No statistics available yet. Start adding books and logging reading sessions!</p>
+    }
+</div>

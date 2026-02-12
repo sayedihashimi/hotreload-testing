@@ -1,0 +1,37 @@
+@model BookBuddy.RazorPages.Services.GoalProgress
+
+<div class="goal-progress">
+    <div class="goal-section">
+        <h4>Books Goal</h4>
+        <div class="goal-numbers">
+            <span class="goal-current">@Model.BooksCompleted</span>
+            <span class="goal-separator">/</span>
+            <span class="goal-target">@Model.Goal.TargetBooks</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill @(Model.BooksGoalMet ? "goal-met" : "")" style="width: @Model.BooksPercentage%"></div>
+        </div>
+        <div class="goal-percentage">@Model.BooksPercentage.ToString("F1")%</div>
+        @if (Model.BooksGoalMet)
+        {
+            <span class="goal-badge">✅ Goal Met!</span>
+        }
+    </div>
+
+    <div class="goal-section">
+        <h4>Pages Goal</h4>
+        <div class="goal-numbers">
+            <span class="goal-current">@Model.PagesCompleted</span>
+            <span class="goal-separator">/</span>
+            <span class="goal-target">@Model.Goal.TargetPages</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill @(Model.PagesGoalMet ? "goal-met" : "")" style="width: @Model.PagesPercentage%"></div>
+        </div>
+        <div class="goal-percentage">@Model.PagesPercentage.ToString("F1")%</div>
+        @if (Model.PagesGoalMet)
+        {
+            <span class="goal-badge">✅ Goal Met!</span>
+        }
+    </div>
+</div>

@@ -1,0 +1,46 @@
+@page
+@model BookBuddy.RazorPages.Pages.Books.IndexModel
+@{
+    ViewData["Title"] = "My Books";
+}
+
+<div class="container">
+    <div class="page-header">
+        <h1>📚 My Books</h1>
+        <a asp-page="Create" class="btn btn-primary">Add New Book</a>
+    </div>
+
+    <div class="filter-bar">
+        <form method="get">
+            <div class="filter-group">
+                <input type="text" name="searchTerm" placeholder="Search books..." value="@Model.SearchTerm" class="search-input" />
+                <select name="statusFilter" class="filter-select" onchange="this.form.submit()">
+                    <option value="">All Status</option>
+                    @foreach (var status in Enum.GetValues<ReadingStatus>())
+                    {
+                        <option value="@status" selected="@(Model.StatusFilter == status.ToString())">@status</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-secondary">Search</button>
+                @if (!string.IsNullOrEmpty(Model.SearchTerm) || !string.IsNullOrEmpty(Model.StatusFilter))
+                {
+                    <a asp-page="Index" class="btn btn-link">Clear Filters</a>
+                }
+            </div>
+        </form>
+    </div>
+
+    @if (Model.Books?.Any() == true)
+    {
+        <div class="books-grid">
+            @foreach (var book in Model.Books)
+            {
+                <partial name="_BookCard" model="book" />
+            }
+        </div>
+    }
+    else
+    {
+        <p class="empty-state">No books found. Start by adding your first book!</p>
+    }
+</div>

@@ -1,0 +1,27 @@
+@model List<BookBuddy.RazorPages.Models.ReadingSession>
+
+<div class="recent-activity">
+    @if (Model?.Any() == true)
+    {
+        <ul class="activity-list">
+            @foreach (var session in Model)
+            {
+                <li class="activity-item">
+                    <div class="activity-icon">📖</div>
+                    <div class="activity-details">
+                        <div class="activity-title">
+                            <a asp-page="/Books/Details" asp-route-id="@session.BookId">@session.Book.Title</a>
+                        </div>
+                        <div class="activity-meta">
+                            @session.Date.ToString("MMM dd") · @session.PagesRead pages · @session.MinutesSpent minutes
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="empty-message">No recent activity</p>
+    }
+</div>

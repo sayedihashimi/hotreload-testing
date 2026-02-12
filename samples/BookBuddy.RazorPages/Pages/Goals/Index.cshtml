@@ -1,0 +1,77 @@
+@page
+@model BookBuddy.RazorPages.Pages.Goals.IndexModel
+@{
+    ViewData["Title"] = "Reading Goals";
+}
+
+<div class="container">
+    <h1>🎯 Reading Goals</h1>
+
+    @if (Model.CurrentYearGoal != null)
+    {
+        <div class="current-goal">
+            <h2>@DateTime.Now.Year Reading Goal</h2>
+            <div class="goal-details">
+                <div class="goal-item">
+                    <label>Target Books:</label>
+                    <span>@Model.CurrentYearGoal.Goal.TargetBooks books</span>
+                </div>
+                <div class="goal-item">
+                    <label>Target Pages:</label>
+                    <span>@Model.CurrentYearGoal.Goal.TargetPages pages</span>
+                </div>
+            </div>
+            <a asp-page="Progress" class="btn btn-primary">View Progress</a>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <p>You haven't set a reading goal for @DateTime.Now.Year yet!</p>
+        </div>
+    }
+
+    <div class="goal-form">
+        <h3>@(Model.CurrentYearGoal != null ? "Update" : "Set") Goal for @DateTime.Now.Year</h3>
+        <form method="post">
+            <input type="hidden" asp-for="Goal.Year" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Goal.TargetBooks"></label>
+                    <input asp-for="Goal.TargetBooks" class="form-control" type="number" />
+                    <span asp-validation-for="Goal.TargetBooks" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Goal.TargetPages"></label>
+                    <input asp-for="Goal.TargetPages" class="form-control" type="number" />
+                    <span asp-validation-for="Goal.TargetPages" class="text-danger"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">@(Model.CurrentYearGoal != null ? "Update" : "Create") Goal</button>
+        </form>
+    </div>
+
+    @if (Model.PreviousGoals?.Any() == true)
+    {
+        <div class="previous-goals">
+            <h3>Previous Years</h3>
+            <div class="goals-list">
+                @foreach (var goal in Model.PreviousGoals)
+                {
+                    <div class="goal-card">
+                        <h4>@goal.Year</h4>
+                        <p>Target: @goal.TargetBooks books, @goal.TargetPages pages</p>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,45 @@
+@page
+@model BookBuddy.RazorPages.Pages.ReadingSessions.HistoryModel
+@{
+    ViewData["Title"] = "Reading History";
+}
+
+<div class="container">
+    <div class="page-header">
+        <h1>📖 Reading History</h1>
+        <a asp-page="Log" class="btn btn-primary">Log New Session</a>
+    </div>
+
+    @if (Model.Sessions?.Any() == true)
+    {
+        <div class="sessions-list">
+            <table class="sessions-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Book</th>
+                        <th>Pages Read</th>
+                        <th>Time Spent</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var session in Model.Sessions)
+                    {
+                        <tr>
+                            <td>@session.Date.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                <a asp-page="/Books/Details" asp-route-id="@session.BookId">@session.Book.Title</a>
+                            </td>
+                            <td>@session.PagesRead pages</td>
+                            <td>@session.MinutesSpent minutes</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p class="empty-state">No reading sessions logged yet. <a asp-page="Log">Log your first session</a>!</p>
+    }
+</div>
