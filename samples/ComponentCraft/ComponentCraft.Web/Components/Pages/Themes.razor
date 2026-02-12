@@ -1,0 +1,99 @@
+@page "/themes"
+@using ComponentCraft.Components.Buttons
+@using ComponentCraft.Components.Cards
+@using ComponentCraft.Components.Layout
+
+<PageTitle>Themes - ComponentCraft</PageTitle>
+
+<PageHeader Title="Theme Customization" Subtitle="Customize colors and appearance with CSS variables" />
+
+<div class="container" style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+    
+    <InfoCard Title="Theme Variables">
+        <p>ComponentCraft uses CSS variables for theming. Customize these values to change the appearance:</p>
+        
+        <div style="margin-top: 1.5rem; display: grid; gap: 1rem;">
+            <div style="display: grid; grid-template-columns: 200px 1fr auto; gap: 1rem; align-items: center;">
+                <strong>Primary Color</strong>
+                <code style="background: var(--cc-bg-secondary); padding: 0.25rem 0.5rem; border-radius: 4px;">--cc-primary</code>
+                <div style="width: 3rem; height: 2rem; background: var(--cc-primary); border-radius: 4px; border: 1px solid var(--cc-border);"></div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 200px 1fr auto; gap: 1rem; align-items: center;">
+                <strong>Secondary Color</strong>
+                <code style="background: var(--cc-bg-secondary); padding: 0.25rem 0.5rem; border-radius: 4px;">--cc-secondary</code>
+                <div style="width: 3rem; height: 2rem; background: var(--cc-secondary); border-radius: 4px; border: 1px solid var(--cc-border);"></div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 200px 1fr auto; gap: 1rem; align-items: center;">
+                <strong>Success Color</strong>
+                <code style="background: var(--cc-bg-secondary); padding: 0.25rem 0.5rem; border-radius: 4px;">--cc-success</code>
+                <div style="width: 3rem; height: 2rem; background: var(--cc-success); border-radius: 4px; border: 1px solid var(--cc-border);"></div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 200px 1fr auto; gap: 1rem; align-items: center;">
+                <strong>Warning Color</strong>
+                <code style="background: var(--cc-bg-secondary); padding: 0.25rem 0.5rem; border-radius: 4px;">--cc-warning</code>
+                <div style="width: 3rem; height: 2rem; background: var(--cc-warning); border-radius: 4px; border: 1px solid var(--cc-border);"></div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 200px 1fr auto; gap: 1rem; align-items: center;">
+                <strong>Error Color</strong>
+                <code style="background: var(--cc-bg-secondary); padding: 0.25rem 0.5rem; border-radius: 4px;">--cc-error</code>
+                <div style="width: 3rem; height: 2rem; background: var(--cc-error); border-radius: 4px; border: 1px solid var(--cc-border);"></div>
+            </div>
+        </div>
+    </InfoCard>
+
+    <InfoCard Title="Quick Theme Switcher" CssClass="mt-3">
+        <p>Try different theme presets:</p>
+        <div style="display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
+            <PrimaryButton OnClick="@(() => ApplyTheme("default"))">Default</PrimaryButton>
+            <PrimaryButton OnClick="@(() => ApplyTheme("dark"))">Dark Mode</PrimaryButton>
+            <PrimaryButton OnClick="@(() => ApplyTheme("ocean"))">Ocean</PrimaryButton>
+            <PrimaryButton OnClick="@(() => ApplyTheme("forest"))">Forest</PrimaryButton>
+            <PrimaryButton OnClick="@(() => ApplyTheme("sunset"))">Sunset</PrimaryButton>
+        </div>
+        
+        @if (!string.IsNullOrEmpty(currentTheme))
+        {
+            <p style="margin-top: 1rem; color: var(--cc-text-secondary);">Current theme: <strong>@currentTheme</strong></p>
+        }
+    </InfoCard>
+
+    <InfoCard Title="Theme Preview" CssClass="mt-3">
+        <div style="display: grid; gap: 1rem;">
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <PrimaryButton>Primary</PrimaryButton>
+                <SecondaryButton>Secondary</SecondaryButton>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <StatCard Icon="📊" Value="1,234" Label="Sample Stat" />
+                <StatCard Icon="⭐" Value="4.8" Label="Rating" />
+            </div>
+        </div>
+    </InfoCard>
+
+    <InfoCard Title="Custom CSS" CssClass="mt-3">
+        <p>To customize the theme, override CSS variables in your app's CSS:</p>
+        <pre style="background: var(--cc-bg-secondary); padding: 1rem; border-radius: var(--cc-radius); overflow-x: auto;"><code>:root {
+    --cc-primary: #your-color;
+    --cc-primary-hover: #your-hover-color;
+    --cc-secondary: #your-color;
+    /* ... more variables */
+}</code></pre>
+    </InfoCard>
+
+</div>
+
+@code {
+    private string currentTheme = "default";
+
+    private void ApplyTheme(string theme)
+    {
+        currentTheme = theme;
+        // In a real app, you would update CSS variables here
+        // For demo purposes, we just track the selected theme
+    }
+}

@@ -1,0 +1,56 @@
+﻿@page "/"
+@using RecipeVault.Wasm.Services
+@using RecipeVault.Wasm.Models
+@inject IRecipeRepository RecipeRepository
+@inject NavigationManager Navigation
+
+<PageTitle>RecipeVault - Home</PageTitle>
+
+<div class="home-page">
+    <h1>🍳 RecipeVault</h1>
+    <p class="lead">Your personal recipe collection, stored locally in your browser</p>
+
+    <div class="quick-actions">
+        <button class="btn btn-primary" @onclick="@(() => Navigation.NavigateTo("/recipes"))">
+            View All Recipes
+        </button>
+        <button class="btn btn-success" @onclick="@(() => Navigation.NavigateTo("/recipes/create"))">
+            Add New Recipe
+        </button>
+        <button class="btn btn-info" @onclick="@(() => Navigation.NavigateTo("/import"))">
+            Import Recipes
+        </button>
+    </div>
+
+    @if (recentRecipes == null)
+    {
+        <p><em>Loading recipes...</em></p>
+    }
+    else if (!recentRecipes.Any())
+    {
+        <div class="alert alert-info">
+            <p>No recipes saved yet. Start by adding your first recipe!</p>
+        </div>
+    }
+    else
+    {
+        <h2>Recently Added</h2>
+        <div class="recipe-grid">
+            @foreach (var recipe in recentRecipes.Take(3))
+            {
+                <RecipeVault.Wasm.Components.RecipeCard 
+                    Recipe="recipe" 
+                    OnViewDetails="@(() => Navigation.NavigateTo($"/recipes/{recipe.Id}"))" />
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<Recipe>? recentRecipes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        recentRecipes = await RecipeRepository.GetAllAsync();
+    }
+}

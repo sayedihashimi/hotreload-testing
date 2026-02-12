@@ -1,0 +1,125 @@
+@page "/playground"
+@using ComponentCraft.Components.Buttons
+@using ComponentCraft.Components.Cards
+@using ComponentCraft.Components.Forms
+@using ComponentCraft.Components.Feedback
+@using ComponentCraft.Components.Layout
+
+<PageTitle>Playground - ComponentCraft</PageTitle>
+
+<PageHeader Title="Component Playground" Subtitle="Interactive playground to test components with custom settings" />
+
+<div class="container" style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+    
+    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+        
+        <InfoCard Title="Controls">
+            <SelectInput Label="Component Type" @bind-Value="componentType">
+                <option value="button">Button</option>
+                <option value="card">Card</option>
+                <option value="alert">Alert</option>
+                <option value="progress">Progress Bar</option>
+            </SelectInput>
+
+            @if (componentType == "button")
+            {
+                <SelectInput Label="Button Type" @bind-Value="buttonType" CssClass="mt-2">
+                    <option value="primary">Primary</option>
+                    <option value="secondary">Secondary</option>
+                    <option value="icon">Icon</option>
+                </SelectInput>
+                
+                <TextInput Label="Button Text" @bind-Value="buttonText" CssClass="mt-2" />
+                
+                <label style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
+                    <input type="checkbox" @bind="buttonDisabled" />
+                    <span>Disabled</span>
+                </label>
+            }
+
+            @if (componentType == "alert")
+            {
+                <SelectInput Label="Alert Type" @bind-Value="alertType" CssClass="mt-2">
+                    <option value="info">Info</option>
+                    <option value="success">Success</option>
+                    <option value="warning">Warning</option>
+                    <option value="error">Error</option>
+                </SelectInput>
+                
+                <TextInput Label="Alert Title" @bind-Value="alertTitle" CssClass="mt-2" />
+                <TextInput Label="Alert Message" @bind-Value="alertMessage" CssClass="mt-2" />
+            }
+
+            @if (componentType == "progress")
+            {
+                <TextInput Label="Progress Value (0-100)" InputType="number" @bind-Value="progressValue" CssClass="mt-2" />
+                <SelectInput Label="Progress Type" @bind-Value="progressType" CssClass="mt-2">
+                    <option value="primary">Primary</option>
+                    <option value="success">Success</option>
+                    <option value="warning">Warning</option>
+                    <option value="error">Error</option>
+                </SelectInput>
+            }
+        </InfoCard>
+
+        <InfoCard Title="Preview">
+            @if (componentType == "button")
+            {
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    @if (buttonType == "primary")
+                    {
+                        <PrimaryButton Disabled="@buttonDisabled">@buttonText</PrimaryButton>
+                    }
+                    else if (buttonType == "secondary")
+                    {
+                        <SecondaryButton Disabled="@buttonDisabled">@buttonText</SecondaryButton>
+                    }
+                    else
+                    {
+                        <IconButton Icon="⚙️" Disabled="@buttonDisabled" Title="@buttonText" />
+                    }
+                </div>
+            }
+
+            @if (componentType == "card")
+            {
+                <InfoCard Title="Sample Card">
+                    <ChildContent>
+                        <p>This is a sample card in the playground. Cards can display any content you want.</p>
+                    </ChildContent>
+                    <Footer>
+                        <PrimaryButton>Action</PrimaryButton>
+                    </Footer>
+                </InfoCard>
+            }
+
+            @if (componentType == "alert")
+            {
+                <Alert Type="@alertType" Title="@alertTitle">
+                    @alertMessage
+                </Alert>
+            }
+
+            @if (componentType == "progress")
+            {
+                <ProgressBar Label="Custom Progress" Value="@int.Parse(progressValue)" Type="@progressType" />
+            }
+        </InfoCard>
+
+    </div>
+
+</div>
+
+@code {
+    private string componentType = "button";
+    private string buttonType = "primary";
+    private string buttonText = "Click Me";
+    private bool buttonDisabled = false;
+    
+    private string alertType = "info";
+    private string alertTitle = "Alert Title";
+    private string alertMessage = "This is an alert message.";
+    
+    private string progressValue = "50";
+    private string progressType = "primary";
+}

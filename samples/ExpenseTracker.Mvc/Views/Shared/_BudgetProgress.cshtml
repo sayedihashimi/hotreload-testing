@@ -1,0 +1,24 @@
+@model (string Label, decimal Current, decimal Total)
+
+@{
+    var percentUsed = Model.Total > 0 ? (Model.Current / Model.Total) * 100 : 0;
+    var progressBarClass = percentUsed > 90 ? "bg-danger" : percentUsed > 75 ? "bg-warning" : "bg-success";
+}
+
+<div class="mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <span>@Model.Label</span>
+        <span><strong>@Model.Current.ToString("C")</strong> / @Model.Total.ToString("C")</span>
+    </div>
+    <div class="progress" style="height: 20px;">
+        <div class="progress-bar @progressBarClass" 
+             role="progressbar" 
+             style="width: @Math.Min(percentUsed, 100)%;" 
+             aria-valuenow="@percentUsed" 
+             aria-valuemin="0" 
+             aria-valuemax="100">
+            @percentUsed.ToString("F1")%
+        </div>
+    </div>
+    <small class="text-muted">Remaining: @((Model.Total - Model.Current).ToString("C"))</small>
+</div>

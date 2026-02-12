@@ -1,0 +1,70 @@
+@inject IJSRuntime JS
+
+<div class="render-mode-indicator">
+    <strong>Render Mode:</strong> 
+    <span class="mode-badge @GetBadgeClass()">@currentMode</span>
+</div>
+
+@code {
+    private string currentMode = "Unknown";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                var isWasm = await JS.InvokeAsync<bool>("eval", "typeof WebAssembly !== 'undefined'");
+                currentMode = isWasm ? "WebAssembly (Client)" : "Server";
+                StateHasChanged();
+            }
+            catch
+            {
+                currentMode = "Static SSR";
+            }
+        }
+    }
+    
+    private string GetBadgeClass()
+    {
+        return currentMode switch
+        {
+            "WebAssembly (Client)" => "badge-wasm",
+            "Server" => "badge-server",
+            _ => "badge-static"
+        };
+    }
+}
+
+<style>
+    .render-mode-indicator {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        font-size: 0.875rem;
+        display: inline-block;
+    }
+    
+    .mode-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+    
+    .badge-wasm {
+        background: #28a745;
+        color: white;
+    }
+    
+    .badge-server {
+        background: #007bff;
+        color: white;
+    }
+    
+    .badge-static {
+        background: #6c757d;
+        color: white;
+    }
+</style>

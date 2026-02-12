@@ -1,0 +1,65 @@
+@using RecipeVault.Server.Models
+
+<div class="ingredient-list">
+    <h4>Ingredients</h4>
+    @if (Editable)
+    {
+        <div class="mb-3">
+            @foreach (var ingredient in Ingredients.OrderBy(i => i.OrderIndex))
+            {
+                <div class="input-group mb-2">
+                    <input type="text" class="form-control" @bind="ingredient.Amount" placeholder="Amount" />
+                    <input type="text" class="form-control" @bind="ingredient.Name" placeholder="Ingredient" />
+                    <button class="btn btn-outline-danger" type="button" @onclick="() => RemoveIngredient(ingredient)">
+                        Remove
+                    </button>
+                </div>
+            }
+            <button class="btn btn-outline-primary" type="button" @onclick="AddIngredient">
+                Add Ingredient
+            </button>
+        </div>
+    }
+    else
+    {
+        <ul class="list-group">
+            @foreach (var ingredient in Ingredients.OrderBy(i => i.OrderIndex))
+            {
+                <li class="list-group-item">
+                    <strong>@ingredient.Amount</strong> @ingredient.Name
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<Ingredient> Ingredients { get; set; } = new();
+
+    [Parameter]
+    public bool Editable { get; set; } = false;
+
+    private void AddIngredient()
+    {
+        Ingredients.Add(new Ingredient
+        {
+            OrderIndex = Ingredients.Count + 1
+        });
+    }
+
+    private void RemoveIngredient(Ingredient ingredient)
+    {
+        Ingredients.Remove(ingredient);
+        ReorderIngredients();
+    }
+
+    private void ReorderIngredients()
+    {
+        var ordered = Ingredients.OrderBy(i => i.OrderIndex).ToList();
+        for (int i = 0; i < ordered.Count; i++)
+        {
+            ordered[i].OrderIndex = i + 1;
+        }
+    }
+}

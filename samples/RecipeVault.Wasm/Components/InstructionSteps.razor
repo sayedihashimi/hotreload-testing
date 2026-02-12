@@ -1,0 +1,16 @@
+@using RecipeVault.Wasm.Models
+
+<div class="instruction-steps">
+    <h4>Instructions</h4>
+    <ol>
+        @foreach (var instruction in Instructions.OrderBy(i => i.StepNumber))
+        {
+            <li>@instruction.Description</li>
+        }
+    </ol>
+</div>
+
+@code {
+    [Parameter]
+    public List<Instruction> Instructions { get; set; } = new();
+}

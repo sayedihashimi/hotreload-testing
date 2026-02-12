@@ -1,0 +1,73 @@
+@page "/recipes/{Id}"
+@using RecipeVault.Wasm.Services
+@using RecipeVault.Wasm.Models
+@inject IRecipeRepository RecipeRepository
+@inject NavigationManager Navigation
+
+<PageTitle>@(recipe?.Name ?? "Recipe Details") - RecipeVault</PageTitle>
+
+<div class="recipe-detail">
+    @if (recipe == null)
+    {
+        <p><em>Loading recipe...</em></p>
+    }
+    else
+    {
+        <div class="detail-header">
+            <button class="btn btn-secondary" @onclick="@(() => Navigation.NavigateTo("/recipes"))">
+                ← Back to Recipes
+            </button>
+            <button class="btn btn-danger" @onclick="DeleteRecipe">
+                🗑️ Delete Recipe
+            </button>
+        </div>
+
+        <h1>@recipe.Name</h1>
+        <p class="lead">@recipe.Description</p>
+
+        <div class="recipe-info">
+            <div class="info-item">
+                <strong>Prep Time:</strong> @recipe.PrepTimeMinutes minutes
+            </div>
+            <div class="info-item">
+                <strong>Cook Time:</strong> @recipe.CookTimeMinutes minutes
+            </div>
+            <div class="info-item">
+                <strong>Total Time:</strong> @(recipe.PrepTimeMinutes + recipe.CookTimeMinutes) minutes
+            </div>
+            <div class="info-item">
+                <strong>Servings:</strong> @recipe.Servings
+            </div>
+        </div>
+
+        <div class="recipe-content">
+            <RecipeVault.Wasm.Components.IngredientList Ingredients="recipe.Ingredients" />
+            <RecipeVault.Wasm.Components.InstructionSteps Instructions="recipe.Instructions" />
+        </div>
+
+        <div class="recipe-footer">
+            <small>Added on @recipe.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy")</small>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    private Recipe? recipe;
+
+    protected override async Task OnInitializedAsync()
+    {
+        recipe = await RecipeRepository.GetByIdAsync(Id);
+    }
+
+    private async Task DeleteRecipe()
+    {
+        if (recipe != null)
+        {
+            await RecipeRepository.DeleteAsync(recipe.Id);
+            Navigation.NavigateTo("/recipes");
+        }
+    }
+}

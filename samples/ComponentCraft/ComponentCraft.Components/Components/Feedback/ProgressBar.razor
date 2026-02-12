@@ -1,0 +1,21 @@
+@namespace ComponentCraft.Components.Feedback
+
+<div class="cc-progress-bar @CssClass">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <div class="cc-progress-label">
+            <span>@Label</span>
+            <span>@Value%</span>
+        </div>
+    }
+    <div class="cc-progress-track">
+        <div class="cc-progress-fill cc-progress-@Type" style="width: @Value%"></div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public int Value { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string Type { get; set; } = "primary";
+}

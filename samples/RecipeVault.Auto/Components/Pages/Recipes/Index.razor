@@ -1,0 +1,81 @@
+@page "/recipes"
+@using Microsoft.EntityFrameworkCore
+@using RecipeVault.Auto.Data
+@using RecipeVault.Auto.Models
+@inject RecipeContext Context
+@rendermode InteractiveServer
+
+<PageTitle>Recipes - RecipeVault</PageTitle>
+
+<div class="recipes-container">
+    <div class="header">
+        <h1>📚 Recipe Collection</h1>
+        <a href="/recipes/create" class="btn btn-primary">+ Add Recipe</a>
+    </div>
+    
+    <RenderModeIndicator />
+    
+    @if (recipes == null)
+    {
+        <p><em>Loading recipes...</em></p>
+    }
+    else if (!recipes.Any())
+    {
+        <p>No recipes found. <a href="/recipes/create">Create your first recipe!</a></p>
+    }
+    else
+    {
+        <div class="recipes-grid">
+            @foreach (var recipe in recipes)
+            {
+                <RecipeCard Recipe="@recipe" />
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<Recipe>? recipes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        recipes = await Context.Recipes
+            .Include(r => r.RecipeTags)
+            .ThenInclude(rt => rt.Tag)
+            .ToListAsync();
+    }
+}
+
+<style>
+    .recipes-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    
+    .recipes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.5rem;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 500;
+        display: inline-block;
+    }
+    
+    .btn-primary {
+        background: #007bff;
+        color: white;
+    }
+</style>

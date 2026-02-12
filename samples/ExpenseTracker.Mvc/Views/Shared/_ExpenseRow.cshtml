@@ -1,0 +1,20 @@
+@model ExpenseTracker.Mvc.Models.Expense
+
+<tr>
+    <td>@Model.Date.ToString("MMM dd, yyyy")</td>
+    <td>@Model.Description</td>
+    <td>
+        @if (Model.Category != null)
+        {
+            <span class="badge" style="background-color: @Model.Category.Color;">
+                @Model.Category.Icon @Model.Category.Name
+            </span>
+        }
+    </td>
+    <td class="fw-bold">@Model.Amount.ToString("C")</td>
+    <td>@Model.PaymentMethod</td>
+    <td>
+        <a asp-controller="Expenses" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-warning">Edit</a>
+        <a asp-controller="Expenses" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">Delete</a>
+    </td>
+</tr>

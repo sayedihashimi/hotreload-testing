@@ -1,0 +1,20 @@
+@using RecipeVault.Wasm.Models
+
+<div class="recipe-card">
+    <h3>@Recipe.Name</h3>
+    <p class="recipe-description">@Recipe.Description</p>
+    <div class="recipe-meta">
+        <span>⏱️ Prep: @Recipe.PrepTimeMinutes min</span>
+        <span>🍳 Cook: @Recipe.CookTimeMinutes min</span>
+        <span>🍽️ Servings: @Recipe.Servings</span>
+    </div>
+    <button class="btn btn-primary" @onclick="OnViewDetails">View Recipe</button>
+</div>
+
+@code {
+    [Parameter]
+    public Recipe Recipe { get; set; } = new();
+
+    [Parameter]
+    public EventCallback OnViewDetails { get; set; }
+}

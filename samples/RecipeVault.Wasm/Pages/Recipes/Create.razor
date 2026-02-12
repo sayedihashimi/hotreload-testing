@@ -1,0 +1,138 @@
+@page "/recipes/create"
+@using RecipeVault.Wasm.Services
+@using RecipeVault.Wasm.Models
+@inject IRecipeRepository RecipeRepository
+@inject NavigationManager Navigation
+
+<PageTitle>Create Recipe - RecipeVault</PageTitle>
+
+<div class="create-recipe-page">
+    <div class="page-header">
+        <h1>Create New Recipe</h1>
+        <button class="btn btn-secondary" @onclick="@(() => Navigation.NavigateTo("/recipes"))">
+            Cancel
+        </button>
+    </div>
+
+    <EditForm Model="recipe" OnValidSubmit="SaveRecipe">
+        <div class="form-section">
+            <h3>Basic Information</h3>
+            <div class="form-group">
+                <label>Recipe Name:</label>
+                <InputText class="form-control" @bind-Value="recipe.Name" />
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <InputTextArea class="form-control" @bind-Value="recipe.Description" rows="3" />
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Prep Time (minutes):</label>
+                    <InputNumber class="form-control" @bind-Value="recipe.PrepTimeMinutes" />
+                </div>
+                <div class="form-group">
+                    <label>Cook Time (minutes):</label>
+                    <InputNumber class="form-control" @bind-Value="recipe.CookTimeMinutes" />
+                </div>
+                <div class="form-group">
+                    <label>Servings:</label>
+                    <InputNumber class="form-control" @bind-Value="recipe.Servings" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Ingredients</h3>
+            @foreach (var ingredient in recipe.Ingredients)
+            {
+                var index = recipe.Ingredients.IndexOf(ingredient);
+                <div class="ingredient-row">
+                    <input class="form-control" placeholder="Name" @bind="ingredient.Name" />
+                    <input class="form-control" placeholder="Quantity" @bind="ingredient.Quantity" />
+                    <input class="form-control" placeholder="Unit" @bind="ingredient.Unit" />
+                    <button type="button" class="btn btn-danger btn-sm" @onclick="@(() => RemoveIngredient(index))">
+                        Remove
+                    </button>
+                </div>
+            }
+            <button type="button" class="btn btn-secondary" @onclick="AddIngredient">
+                ➕ Add Ingredient
+            </button>
+        </div>
+
+        <div class="form-section">
+            <h3>Instructions</h3>
+            @foreach (var instruction in recipe.Instructions.OrderBy(i => i.StepNumber))
+            {
+                var index = recipe.Instructions.IndexOf(instruction);
+                <div class="instruction-row">
+                    <span class="step-number">Step @instruction.StepNumber:</span>
+                    <InputTextArea class="form-control" @bind-Value="instruction.Description" rows="2" />
+                    <button type="button" class="btn btn-danger btn-sm" @onclick="@(() => RemoveInstruction(index))">
+                        Remove
+                    </button>
+                </div>
+            }
+            <button type="button" class="btn btn-secondary" @onclick="AddInstruction">
+                ➕ Add Instruction
+            </button>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                💾 Save Recipe
+            </button>
+            <button type="button" class="btn btn-secondary" @onclick="@(() => Navigation.NavigateTo("/recipes"))">
+                Cancel
+            </button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private Recipe recipe = new()
+    {
+        Servings = 4,
+        PrepTimeMinutes = 15,
+        CookTimeMinutes = 30,
+        Ingredients = new List<Ingredient> { new Ingredient() },
+        Instructions = new List<Instruction> { new Instruction { StepNumber = 1 } }
+    };
+
+    private void AddIngredient()
+    {
+        recipe.Ingredients.Add(new Ingredient());
+    }
+
+    private void RemoveIngredient(int index)
+    {
+        if (recipe.Ingredients.Count > 1)
+        {
+            recipe.Ingredients.RemoveAt(index);
+        }
+    }
+
+    private void AddInstruction()
+    {
+        var nextStep = recipe.Instructions.Any() ? recipe.Instructions.Max(i => i.StepNumber) + 1 : 1;
+        recipe.Instructions.Add(new Instruction { StepNumber = nextStep });
+    }
+
+    private void RemoveInstruction(int index)
+    {
+        if (recipe.Instructions.Count > 1)
+        {
+            recipe.Instructions.RemoveAt(index);
+            for (int i = 0; i < recipe.Instructions.Count; i++)
+            {
+                recipe.Instructions[i].StepNumber = i + 1;
+            }
+        }
+    }
+
+    private async Task SaveRecipe()
+    {
+        await RecipeRepository.AddAsync(recipe);
+        Navigation.NavigateTo("/recipes");
+    }
+}

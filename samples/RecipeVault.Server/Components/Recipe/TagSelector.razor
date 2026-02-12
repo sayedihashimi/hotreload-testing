@@ -1,0 +1,40 @@
+@using RecipeVault.Server.Models
+
+<div class="tag-selector">
+    <h4>Tags</h4>
+    <div class="d-flex flex-wrap gap-2">
+        @foreach (var tag in AvailableTags)
+        {
+            var isSelected = SelectedTagIds.Contains(tag.Id);
+            <button type="button" 
+                    class="btn @(isSelected ? "btn-primary" : "btn-outline-secondary")"
+                    @onclick="() => ToggleTag(tag.Id)">
+                @tag.Name
+            </button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<Tag> AvailableTags { get; set; } = new();
+
+    [Parameter]
+    public List<int> SelectedTagIds { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<List<int>> SelectedTagIdsChanged { get; set; }
+
+    private async Task ToggleTag(int tagId)
+    {
+        if (SelectedTagIds.Contains(tagId))
+        {
+            SelectedTagIds.Remove(tagId);
+        }
+        else
+        {
+            SelectedTagIds.Add(tagId);
+        }
+        await SelectedTagIdsChanged.InvokeAsync(SelectedTagIds);
+    }
+}

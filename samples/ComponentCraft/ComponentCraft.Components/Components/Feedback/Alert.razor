@@ -1,0 +1,29 @@
+@namespace ComponentCraft.Components.Feedback
+
+<div class="cc-alert cc-alert-@Type @CssClass" role="alert">
+    @if (Dismissible)
+    {
+        <button class="cc-alert-close" @onclick="Close">&times;</button>
+    }
+    <div class="cc-alert-content">
+        @if (!string.IsNullOrEmpty(Title))
+        {
+            <strong class="cc-alert-title">@Title</strong>
+        }
+        <div class="cc-alert-message">@ChildContent</div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public string Type { get; set; } = "info";
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public bool Dismissible { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private async Task Close()
+    {
+        await OnClose.InvokeAsync();
+    }
+}

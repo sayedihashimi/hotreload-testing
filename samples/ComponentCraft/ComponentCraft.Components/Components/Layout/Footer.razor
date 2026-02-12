@@ -1,0 +1,19 @@
+@namespace ComponentCraft.Components.Layout
+
+<footer class="cc-footer @CssClass">
+    <div class="cc-footer-content">
+        @if (ChildContent != null)
+        {
+            @ChildContent
+        }
+        else
+        {
+            <p>&copy; @DateTime.Now.Year ComponentCraft. All rights reserved.</p>
+        }
+    </div>
+</footer>
+
+@code {
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

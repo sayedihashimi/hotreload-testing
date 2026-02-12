@@ -1,0 +1,35 @@
+@model ExpenseTracker.Mvc.Models.Budget
+
+@{
+    ViewData["Title"] = "Delete Budget";
+}
+
+<div class="container mt-4">
+    <h1>Delete Budget</h1>
+    <h3 class="text-danger">Are you sure you want to delete this budget?</h3>
+    <hr />
+
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Name)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Name)</dd>
+
+                <dt class="col-sm-3">Start Date</dt>
+                <dd class="col-sm-9">@Model.StartDate.ToString("MMMM dd, yyyy")</dd>
+
+                <dt class="col-sm-3">End Date</dt>
+                <dd class="col-sm-9">@Model.EndDate.ToString("MMMM dd, yyyy")</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.TotalAmount)</dt>
+                <dd class="col-sm-9 fw-bold">@Model.TotalAmount.ToString("C")</dd>
+            </dl>
+
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,60 @@
+@page "/components/buttons"
+@using ComponentCraft.Components.Buttons
+@using ComponentCraft.Components.Cards
+@using ComponentCraft.Components.Layout
+
+<PageTitle>Buttons - ComponentCraft</PageTitle>
+
+<PageHeader Title="Buttons" Subtitle="Interactive button components with icons and states" />
+
+<div class="container" style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+    
+    <InfoCard Title="Primary Buttons">
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+            <PrimaryButton>Click Me</PrimaryButton>
+            <PrimaryButton Icon="✓">With Icon</PrimaryButton>
+            <PrimaryButton Disabled="true">Disabled</PrimaryButton>
+        </div>
+    </InfoCard>
+
+    <InfoCard Title="Secondary Buttons" CssClass="mt-3">
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+            <SecondaryButton>Secondary</SecondaryButton>
+            <SecondaryButton Icon="★">Favorite</SecondaryButton>
+            <SecondaryButton Disabled="true">Disabled</SecondaryButton>
+        </div>
+    </InfoCard>
+
+    <InfoCard Title="Icon Buttons" CssClass="mt-3">
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+            <IconButton Icon="❤️" Title="Like" />
+            <IconButton Icon="💾" Title="Save" />
+            <IconButton Icon="🔍" Title="Search" />
+            <IconButton Icon="⚙️" Title="Settings" />
+            <IconButton Icon="✕" Title="Close" Disabled="true" />
+        </div>
+    </InfoCard>
+
+    <InfoCard Title="Interactive Demo" CssClass="mt-3">
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+            <PrimaryButton OnClick="@(() => clickCount++)">Clicked @clickCount times</PrimaryButton>
+            <SecondaryButton OnClick="@ResetCount">Reset</SecondaryButton>
+        </div>
+        @if (clickCount > 0)
+        {
+            <p style="margin-top: 1rem; color: var(--cc-text-secondary);">
+                Button has been clicked @clickCount time@(clickCount == 1 ? "" : "s").
+            </p>
+        }
+    </InfoCard>
+
+</div>
+
+@code {
+    private int clickCount = 0;
+
+    private void ResetCount()
+    {
+        clickCount = 0;
+    }
+}

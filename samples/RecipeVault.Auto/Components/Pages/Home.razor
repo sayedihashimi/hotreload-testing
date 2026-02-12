@@ -1,0 +1,108 @@
+﻿@page "/"
+@using Microsoft.EntityFrameworkCore
+@using RecipeVault.Auto.Data
+@using RecipeVault.Auto.Models
+@inject RecipeContext Context
+@rendermode InteractiveServer
+
+<PageTitle>RecipeVault - Home</PageTitle>
+
+<div class="home-container">
+    <h1>🍳 Welcome to RecipeVault</h1>
+    <p class="lead">Discover and manage your favorite recipes with ease.</p>
+    
+    <RenderModeIndicator />
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>@recipeCount</h3>
+            <p>Total Recipes</p>
+        </div>
+        <div class="stat-card">
+            <h3>@tagCount</h3>
+            <p>Categories</p>
+        </div>
+        <div class="stat-card">
+            <h3>Easy to Expert</h3>
+            <p>Difficulty Levels</p>
+        </div>
+    </div>
+    
+    <div class="action-buttons">
+        <a href="/recipes" class="btn btn-primary">Browse Recipes</a>
+        <a href="/recipes/create" class="btn btn-secondary">Add New Recipe</a>
+    </div>
+</div>
+
+@code {
+    private int recipeCount;
+    private int tagCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        recipeCount = await Context.Recipes.CountAsync();
+        tagCount = await Context.Tags.CountAsync();
+    }
+}
+
+<style>
+    .home-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        text-align: center;
+    }
+    
+    .lead {
+        font-size: 1.25rem;
+        color: #6c757d;
+        margin-bottom: 2rem;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 2rem 0;
+    }
+    
+    .stat-card {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+    }
+    
+    .stat-card h3 {
+        margin: 0;
+        font-size: 2rem;
+        color: #007bff;
+    }
+    
+    .stat-card p {
+        margin: 0.5rem 0 0;
+        color: #6c757d;
+    }
+    
+    .action-buttons {
+        margin-top: 2rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.5rem;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+    
+    .btn-primary {
+        background: #007bff;
+        color: white;
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+</style>

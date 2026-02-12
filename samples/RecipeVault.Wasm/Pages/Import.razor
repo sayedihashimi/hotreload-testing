@@ -1,0 +1,115 @@
+@page "/import"
+@using RecipeVault.Wasm.Services
+@using RecipeVault.Wasm.Models
+@using System.Text.Json
+@inject IRecipeRepository RecipeRepository
+@inject NavigationManager Navigation
+
+<PageTitle>Import Recipes - RecipeVault</PageTitle>
+
+<div class="import-page">
+    <div class="page-header">
+        <h1>Import Recipes</h1>
+        <button class="btn btn-secondary" @onclick="@(() => Navigation.NavigateTo("/recipes"))">
+            Back to Recipes
+        </button>
+    </div>
+
+    <div class="import-instructions">
+        <h3>How to Import</h3>
+        <p>Paste your recipes JSON data below and click "Import".</p>
+        <p>The JSON should be an array of recipe objects with the following structure:</p>
+        <pre>
+[
+  {
+    "Name": "Recipe Name",
+    "Description": "Recipe description",
+    "PrepTimeMinutes": 15,
+    "CookTimeMinutes": 30,
+    "Servings": 4,
+    "Ingredients": [
+      { "Name": "Ingredient", "Quantity": "1", "Unit": "cup" }
+    ],
+    "Instructions": [
+      { "StepNumber": 1, "Description": "First step..." }
+    ]
+  }
+]
+        </pre>
+    </div>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger">
+            <strong>Error:</strong> @errorMessage
+        </div>
+    }
+
+    @if (importSuccess)
+    {
+        <div class="alert alert-success">
+            <strong>Success!</strong> @importCount recipes imported successfully.
+            <button class="btn btn-link" @onclick="@(() => Navigation.NavigateTo("/recipes"))">
+                View Recipes
+            </button>
+        </div>
+    }
+
+    <div class="form-group">
+        <label>JSON Data:</label>
+        <textarea class="form-control" rows="15" @bind="jsonInput" placeholder="Paste your recipes JSON here..."></textarea>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn btn-primary" @onclick="ImportRecipes" disabled="@string.IsNullOrWhiteSpace(jsonInput)">
+            📥 Import Recipes
+        </button>
+        <button class="btn btn-secondary" @onclick="ClearInput">
+            Clear
+        </button>
+    </div>
+</div>
+
+@code {
+    private string jsonInput = string.Empty;
+    private string errorMessage = string.Empty;
+    private bool importSuccess = false;
+    private int importCount = 0;
+
+    private async Task ImportRecipes()
+    {
+        errorMessage = string.Empty;
+        importSuccess = false;
+        importCount = 0;
+
+        try
+        {
+            var recipes = JsonSerializer.Deserialize<List<Recipe>>(jsonInput);
+            if (recipes == null || !recipes.Any())
+            {
+                errorMessage = "No valid recipes found in the JSON data.";
+                return;
+            }
+
+            importCount = await RecipeRepository.ImportAsync(recipes);
+            importSuccess = true;
+            jsonInput = string.Empty;
+        }
+        catch (JsonException ex)
+        {
+            errorMessage = $"Invalid JSON format: {ex.Message}";
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Import failed: {ex.Message}";
+        }
+    }
+
+    private void ClearInput()
+    {
+        jsonInput = string.Empty;
+        errorMessage = string.Empty;
+        importSuccess = false;
+        importCount = 0;
+    }
+}

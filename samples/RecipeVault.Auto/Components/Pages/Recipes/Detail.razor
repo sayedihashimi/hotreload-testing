@@ -1,0 +1,175 @@
+@page "/recipes/{id:int}"
+@using Microsoft.EntityFrameworkCore
+@using RecipeVault.Auto.Data
+@using RecipeVault.Auto.Models
+@inject RecipeContext Context
+@rendermode InteractiveServer
+
+<PageTitle>@(recipe?.Name ?? "Recipe") - RecipeVault</PageTitle>
+
+<div class="recipe-detail">
+    <RenderModeIndicator />
+    
+    @if (recipe == null)
+    {
+        <p><em>Loading recipe...</em></p>
+    }
+    else
+    {
+        <div class="recipe-header">
+            <h1>@recipe.Name</h1>
+            <div class="tags">
+                @foreach (var tag in recipe.RecipeTags.Select(rt => rt.Tag))
+                {
+                    <span class="tag" style="background-color: @tag.Color">@tag.Name</span>
+                }
+            </div>
+        </div>
+        
+        <p class="description">@recipe.Description</p>
+        
+        <div class="recipe-info">
+            <div class="info-item">
+                <strong>Prep Time:</strong> @recipe.PrepTimeMinutes min
+            </div>
+            <div class="info-item">
+                <strong>Cook Time:</strong> @recipe.CookTimeMinutes min
+            </div>
+            <div class="info-item">
+                <strong>Servings:</strong> @recipe.Servings
+            </div>
+            <div class="info-item">
+                <strong>Difficulty:</strong> @recipe.Difficulty
+            </div>
+        </div>
+        
+        <div class="recipe-content">
+            <div class="ingredients-section">
+                <h2>🛒 Ingredients</h2>
+                <ul>
+                    @foreach (var ingredient in recipe.Ingredients.OrderBy(i => i.Order))
+                    {
+                        <li>@ingredient.Amount @ingredient.Name</li>
+                    }
+                </ul>
+            </div>
+            
+            <div class="instructions-section">
+                <h2>👨‍🍳 Instructions</h2>
+                <ol>
+                    @foreach (var instruction in recipe.Instructions.OrderBy(i => i.StepNumber))
+                    {
+                        <li>@instruction.Description</li>
+                    }
+                </ol>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <a href="/recipes" class="btn btn-secondary">← Back to Recipes</a>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    
+    private Recipe? recipe;
+
+    protected override async Task OnInitializedAsync()
+    {
+        recipe = await Context.Recipes
+            .Include(r => r.Ingredients)
+            .Include(r => r.Instructions)
+            .Include(r => r.RecipeTags)
+            .ThenInclude(rt => rt.Tag)
+            .FirstOrDefaultAsync(r => r.Id == Id);
+    }
+}
+
+<style>
+    .recipe-detail {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    .recipe-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    .tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+    }
+    
+    .tag {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        color: white;
+    }
+    
+    .description {
+        font-size: 1.125rem;
+        color: #6c757d;
+        margin-bottom: 1.5rem;
+    }
+    
+    .recipe-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    
+    .info-item {
+        font-size: 0.95rem;
+    }
+    
+    .recipe-content {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .ingredients-section h2,
+    .instructions-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .ingredients-section ul,
+    .instructions-section ol {
+        padding-left: 1.5rem;
+    }
+    
+    .ingredients-section li,
+    .instructions-section li {
+        margin-bottom: 0.5rem;
+    }
+    
+    .actions {
+        margin-top: 2rem;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.5rem;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 500;
+        display: inline-block;
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+</style>

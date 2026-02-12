@@ -1,0 +1,14 @@
+<span class="badge bg-secondary me-2">
+    <i class="bi bi-@Icon"></i> @Time min @Label
+</span>
+
+@code {
+    [Parameter]
+    public string Icon { get; set; } = "clock";
+
+    [Parameter]
+    public int Time { get; set; }
+
+    [Parameter]
+    public string Label { get; set; } = "";
+}

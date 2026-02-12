@@ -1,0 +1,26 @@
+@namespace ComponentCraft.Components.Cards
+
+<div class="cc-card cc-info-card @CssClass">
+    @if (!string.IsNullOrEmpty(Title))
+    {
+        <div class="cc-card-header">
+            <h3 class="cc-card-title">@Title</h3>
+        </div>
+    }
+    <div class="cc-card-body">
+        @ChildContent
+    </div>
+    @if (Footer != null)
+    {
+        <div class="cc-card-footer">
+            @Footer
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? Footer { get; set; }
+}

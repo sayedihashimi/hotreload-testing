@@ -1,0 +1,24 @@
+@namespace ComponentCraft.Components.Layout
+
+<header class="cc-page-header @CssClass">
+    <div class="cc-header-content">
+        <h1 class="cc-header-title">@Title</h1>
+        @if (!string.IsNullOrEmpty(Subtitle))
+        {
+            <p class="cc-header-subtitle">@Subtitle</p>
+        }
+    </div>
+    @if (Actions != null)
+    {
+        <div class="cc-header-actions">
+            @Actions
+        </div>
+    }
+</header>
+
+@code {
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public RenderFragment? Actions { get; set; }
+}

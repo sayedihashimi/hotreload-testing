@@ -1,0 +1,60 @@
+@page "/components/cards"
+@using ComponentCraft.Components.Cards
+@using ComponentCraft.Components.Buttons
+@using ComponentCraft.Components.Layout
+
+<PageTitle>Cards - ComponentCraft</PageTitle>
+
+<PageHeader Title="Cards" Subtitle="Display content in organized, flexible card layouts" />
+
+<div class="container" style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+    
+    <h3>Info Cards</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        <InfoCard Title="Basic Card">
+            <p>This is a simple info card with a title and content area.</p>
+        </InfoCard>
+
+        <InfoCard Title="Card with Footer">
+            <ChildContent>
+                <p>Cards can have headers, body content, and footers.</p>
+            </ChildContent>
+            <Footer>
+                <PrimaryButton>Action</PrimaryButton>
+            </Footer>
+        </InfoCard>
+
+        <InfoCard Title="Rich Content">
+            <p>Cards support any content including lists, images, and more.</p>
+            <ul style="margin: 0; padding-left: 1.5rem;">
+                <li>Feature one</li>
+                <li>Feature two</li>
+                <li>Feature three</li>
+            </ul>
+        </InfoCard>
+    </div>
+
+    <h3>Stat Cards</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+        <StatCard Icon="📊" Value="2,543" Label="Total Users" Change="+12%" ChangeClass="text-success" />
+        <StatCard Icon="💰" Value="$45.2K" Label="Revenue" Change="+8%" ChangeClass="text-success" />
+        <StatCard Icon="🛒" Value="892" Label="Orders" Change="-3%" ChangeClass="text-error" />
+        <StatCard Icon="⭐" Value="4.8" Label="Rating" />
+    </div>
+
+    <h3>Profile Cards</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+        <ProfileCard Name="Alice Johnson" Role="Software Engineer">
+            <p style="margin: 0.5rem 0; font-size: 0.875rem;">Building amazing web applications with Blazor.</p>
+        </ProfileCard>
+
+        <ProfileCard Name="Bob Smith" Role="Product Designer">
+            <p style="margin: 0.5rem 0; font-size: 0.875rem;">Creating beautiful user experiences.</p>
+        </ProfileCard>
+
+        <ProfileCard Name="Carol Williams" Role="DevOps Engineer">
+            <p style="margin: 0.5rem 0; font-size: 0.875rem;">Automating deployments and infrastructure.</p>
+        </ProfileCard>
+    </div>
+
+</div>

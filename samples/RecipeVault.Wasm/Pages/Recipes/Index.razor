@@ -1,0 +1,53 @@
+@page "/recipes"
+@using RecipeVault.Wasm.Services
+@using RecipeVault.Wasm.Models
+@inject IRecipeRepository RecipeRepository
+@inject NavigationManager Navigation
+
+<PageTitle>All Recipes - RecipeVault</PageTitle>
+
+<div class="recipes-page">
+    <div class="page-header">
+        <h1>All Recipes</h1>
+        <div>
+            <button class="btn btn-success" @onclick="@(() => Navigation.NavigateTo("/recipes/create"))">
+                ➕ Add New Recipe
+            </button>
+            <RecipeVault.Wasm.Components.ExportButton Recipes="recipes" />
+        </div>
+    </div>
+
+    @if (recipes == null)
+    {
+        <p><em>Loading recipes...</em></p>
+    }
+    else if (!recipes.Any())
+    {
+        <div class="alert alert-info">
+            <p>No recipes found. Add your first recipe to get started!</p>
+        </div>
+    }
+    else
+    {
+        <div class="recipe-count">
+            <p>Total recipes: <strong>@recipes.Count</strong></p>
+        </div>
+        <div class="recipe-grid">
+            @foreach (var recipe in recipes)
+            {
+                <RecipeVault.Wasm.Components.RecipeCard 
+                    Recipe="recipe" 
+                    OnViewDetails="@(() => Navigation.NavigateTo($"/recipes/{recipe.Id}"))" />
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<Recipe> recipes = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        recipes = await RecipeRepository.GetAllAsync();
+    }
+}

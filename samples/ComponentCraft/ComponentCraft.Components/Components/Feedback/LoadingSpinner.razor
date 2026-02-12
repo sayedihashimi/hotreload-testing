@@ -1,0 +1,14 @@
+@namespace ComponentCraft.Components.Feedback
+
+<div class="cc-loading-spinner @CssClass">
+    <div class="cc-spinner"></div>
+    @if (!string.IsNullOrEmpty(Message))
+    {
+        <p class="cc-spinner-message">@Message</p>
+    }
+</div>
+
+@code {
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public string? Message { get; set; }
+}
