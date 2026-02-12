@@ -1,0 +1,37 @@
+@using RecipeVault.Wasm.Models
+@using RecipeVault.Wasm.Services
+@using System.Text.Json
+@inject IRecipeRepository RecipeRepository
+@inject IJSRuntime JS
+
+<button @onclick="ExportRecipes" class="btn btn-secondary" disabled="@isExporting">
+    @if (isExporting)
+    {
+        <span>Exporting...</span>
+    }
+    else
+    {
+        <span>Export Recipes</span>
+    }
+</button>
+
+@code {
+    private bool isExporting = false;
+
+    private async Task ExportRecipes()
+    {
+        isExporting = true;
+        try
+        {
+            var recipes = await RecipeRepository.GetAllAsync();
+            var json = JsonSerializer.Serialize(recipes, new JsonSerializerOptions { WriteIndented = true });
+            var fileName = $"recipes-export-{DateTime.Now:yyyy-MM-dd}.json";
+            
+            await JS.InvokeVoidAsync("downloadFile", fileName, json);
+        }
+        finally
+        {
+            isExporting = false;
+        }
+    }
+}

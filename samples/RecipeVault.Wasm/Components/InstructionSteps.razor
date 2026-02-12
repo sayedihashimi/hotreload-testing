@@ -1,0 +1,55 @@
+@using RecipeVault.Wasm.Models
+
+<div class="instruction-steps">
+    <h3>Instructions</h3>
+    @if (ReadOnly)
+    {
+        <ol>
+            @foreach (var instruction in Instructions.OrderBy(i => i.StepNumber))
+            {
+                <li>@instruction.Text</li>
+            }
+        </ol>
+    }
+    else
+    {
+        @foreach (var instruction in Instructions.OrderBy(i => i.StepNumber))
+        {
+            <div class="instruction-item">
+                <span class="step-number">Step @instruction.StepNumber</span>
+                <textarea @bind="instruction.Text" placeholder="Instruction text" class="form-control" rows="2"></textarea>
+                <button type="button" @onclick="() => RemoveInstruction(instruction)" class="btn btn-danger btn-sm">Remove</button>
+            </div>
+        }
+        <button type="button" @onclick="AddInstruction" class="btn btn-secondary btn-sm">Add Step</button>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<Instruction> Instructions { get; set; } = new();
+
+    [Parameter]
+    public bool ReadOnly { get; set; } = true;
+
+    private void AddInstruction()
+    {
+        var nextStep = Instructions.Count > 0 ? Instructions.Max(i => i.StepNumber) + 1 : 1;
+        Instructions.Add(new Instruction { StepNumber = nextStep });
+    }
+
+    private void RemoveInstruction(Instruction instruction)
+    {
+        Instructions.Remove(instruction);
+        RenumberSteps();
+    }
+
+    private void RenumberSteps()
+    {
+        var ordered = Instructions.OrderBy(i => i.StepNumber).ToList();
+        for (int i = 0; i < ordered.Count; i++)
+        {
+            ordered[i].StepNumber = i + 1;
+        }
+    }
+}

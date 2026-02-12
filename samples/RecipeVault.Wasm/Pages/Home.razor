@@ -1,7 +1,69 @@
 ﻿@page "/"
+@using RecipeVault.Wasm.Models
+@using RecipeVault.Wasm.Services
+@inject IRecipeRepository RecipeRepository
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Home - RecipeVault</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="home-page">
+    <div class="hero">
+        <h1>Welcome to RecipeVault</h1>
+        <p class="lead">Your personal recipe collection, stored securely in your browser</p>
+        <div class="hero-actions">
+            <a href="/recipes/new" class="btn btn-primary">Add New Recipe</a>
+            <a href="/recipes" class="btn btn-secondary">Browse Recipes</a>
+        </div>
+    </div>
 
-Welcome to your new app.
+    <div class="featured-section">
+        <h2>Featured Recipes</h2>
+        @if (recipes == null)
+        {
+            <p>Loading recipes...</p>
+        }
+        else if (recipes.Count == 0)
+        {
+            <p>No recipes yet. <a href="/recipes/new">Add your first recipe!</a></p>
+        }
+        else
+        {
+            <div class="recipe-grid">
+                @foreach (var recipe in recipes.Take(6))
+                {
+                    <RecipeCard Recipe="recipe" />
+                }
+            </div>
+        }
+    </div>
+
+    <div class="stats-section">
+        <div class="stat-card">
+            <h3>@totalRecipes</h3>
+            <p>Total Recipes</p>
+        </div>
+        <div class="stat-card">
+            <h3>@totalTags</h3>
+            <p>Tags</p>
+        </div>
+        <div class="stat-card">
+            <h3>@easyRecipes</h3>
+            <p>Easy Recipes</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Recipe>? recipes;
+    private int totalRecipes = 0;
+    private int totalTags = 0;
+    private int easyRecipes = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        recipes = await RecipeRepository.GetAllAsync();
+        totalRecipes = recipes.Count;
+        var tags = await RecipeRepository.GetAllTagsAsync();
+        totalTags = tags.Count;
+        easyRecipes = recipes.Count(r => r.Difficulty == DifficultyLevel.Easy);
+    }
+}

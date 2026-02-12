@@ -1,0 +1,43 @@
+@inject IJSRuntime JS
+@implements IDisposable
+
+<div class="offline-indicator @(isOnline ? "online" : "offline")">
+    @if (isOnline)
+    {
+        <span class="status-icon">●</span>
+        <span>Online</span>
+    }
+    else
+    {
+        <span class="status-icon">●</span>
+        <span>Offline</span>
+    }
+</div>
+
+@code {
+    private bool isOnline = true;
+    private DotNetObjectReference<OfflineIndicator>? objRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("registerOnlineStatusHandler", objRef);
+            isOnline = await JS.InvokeAsync<bool>("navigator.onLine");
+            StateHasChanged();
+        }
+    }
+
+    [JSInvokable]
+    public void UpdateOnlineStatus(bool online)
+    {
+        isOnline = online;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        objRef?.Dispose();
+    }
+}

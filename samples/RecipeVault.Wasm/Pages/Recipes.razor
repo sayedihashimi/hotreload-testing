@@ -1,0 +1,79 @@
+@page "/recipes"
+@using RecipeVault.Wasm.Models
+@using RecipeVault.Wasm.Services
+@inject IRecipeRepository RecipeRepository
+
+<PageTitle>Recipes - RecipeVault</PageTitle>
+
+<div class="recipes-page">
+    <div class="page-header">
+        <h1>My Recipes</h1>
+        <div class="header-actions">
+            <ExportButton />
+            <a href="/recipes/new" class="btn btn-primary">Add Recipe</a>
+            <a href="/import" class="btn btn-secondary">Import</a>
+        </div>
+    </div>
+
+    <div class="filters">
+        <input type="text" @bind="searchQuery" @bind:event="oninput" placeholder="Search recipes..." class="form-control search-input" />
+        
+        <select @bind="filterDifficulty" class="form-control">
+            <option value="">All Difficulties</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+            <option value="Expert">Expert</option>
+        </select>
+
+        <select @bind="filterTag" class="form-control">
+            <option value="">All Tags</option>
+            @foreach (var tag in availableTags)
+            {
+                <option value="@tag">@tag</option>
+            }
+        </select>
+    </div>
+
+    @if (recipes == null)
+    {
+        <p>Loading recipes...</p>
+    }
+    else if (filteredRecipes.Count == 0)
+    {
+        <div class="empty-state">
+            <p>No recipes found. <a href="/recipes/new">Add your first recipe!</a></p>
+        </div>
+    }
+    else
+    {
+        <div class="recipe-grid">
+            @foreach (var recipe in filteredRecipes)
+            {
+                <RecipeCard Recipe="recipe" />
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<Recipe>? recipes;
+    private List<string> availableTags = new();
+    private string searchQuery = string.Empty;
+    private string filterDifficulty = string.Empty;
+    private string filterTag = string.Empty;
+
+    private List<Recipe> filteredRecipes => recipes?
+        .Where(r => string.IsNullOrEmpty(searchQuery) || 
+                    r.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                    r.Description.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+        .Where(r => string.IsNullOrEmpty(filterDifficulty) || r.Difficulty.ToString() == filterDifficulty)
+        .Where(r => string.IsNullOrEmpty(filterTag) || r.Tags.Contains(filterTag))
+        .ToList() ?? new List<Recipe>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        recipes = await RecipeRepository.GetAllAsync();
+        availableTags = await RecipeRepository.GetAllTagsAsync();
+    }
+}

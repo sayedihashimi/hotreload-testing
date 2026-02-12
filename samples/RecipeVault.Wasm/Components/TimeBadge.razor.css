@@ -1,0 +1,16 @@
+.time-badge {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.time-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.time-item svg {
+    color: #1976d2;
+}

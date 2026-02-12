@@ -1,0 +1,76 @@
+@page "/recipes/{id:int}"
+@using RecipeVault.Wasm.Models
+@using RecipeVault.Wasm.Services
+@inject IRecipeRepository RecipeRepository
+@inject NavigationManager Navigation
+
+<PageTitle>@(recipe?.Name ?? "Recipe") - RecipeVault</PageTitle>
+
+<div class="recipe-detail">
+    @if (recipe == null)
+    {
+        <p>Loading recipe...</p>
+    }
+    else
+    {
+        <div class="recipe-header">
+            <div class="header-content">
+                <h1>@recipe.Name</h1>
+                <p class="description">@recipe.Description</p>
+                <div class="recipe-meta">
+                    <div class="meta-item">
+                        <strong>Servings:</strong> @recipe.Servings
+                    </div>
+                    <TimeBadge PrepTime="recipe.PrepTimeMinutes" CookTime="recipe.CookTimeMinutes" />
+                    <DifficultyStars Level="recipe.Difficulty" />
+                </div>
+                <div class="recipe-tags">
+                    @foreach (var tag in recipe.Tags)
+                    {
+                        <span class="tag">@tag</span>
+                    }
+                </div>
+            </div>
+            @if (!string.IsNullOrEmpty(recipe.ImageUrl))
+            {
+                <img src="@recipe.ImageUrl" alt="@recipe.Name" class="recipe-image" />
+            }
+        </div>
+
+        <div class="recipe-actions">
+            <a href="/recipes/@recipe.Id/edit" class="btn btn-primary">Edit Recipe</a>
+            <button @onclick="DeleteRecipe" class="btn btn-danger">Delete Recipe</button>
+            <a href="/recipes" class="btn btn-secondary">Back to Recipes</a>
+        </div>
+
+        <div class="recipe-content">
+            <div class="ingredients-section">
+                <IngredientList Ingredients="recipe.Ingredients" ReadOnly="true" />
+            </div>
+            <div class="instructions-section">
+                <InstructionSteps Instructions="recipe.Instructions" ReadOnly="true" />
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Recipe? recipe;
+
+    protected override async Task OnInitializedAsync()
+    {
+        recipe = await RecipeRepository.GetByIdAsync(Id);
+    }
+
+    private async Task DeleteRecipe()
+    {
+        if (recipe != null)
+        {
+            await RecipeRepository.DeleteAsync(recipe.Id);
+            Navigation.NavigateTo("/recipes");
+        }
+    }
+}

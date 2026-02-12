@@ -1,0 +1,23 @@
+.offline-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    transition: all 0.3s;
+}
+
+.offline-indicator.online {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.offline-indicator.offline {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.status-icon {
+    font-size: 0.75rem;
+}

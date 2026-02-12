@@ -1,0 +1,47 @@
+@using RecipeVault.Wasm.Models
+
+<div class="ingredient-list">
+    <h3>Ingredients</h3>
+    @if (ReadOnly)
+    {
+        <ul>
+            @foreach (var ingredient in Ingredients)
+            {
+                <li>
+                    <strong>@ingredient.Quantity @ingredient.Unit</strong> @ingredient.Name
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        @foreach (var ingredient in Ingredients)
+        {
+            <div class="ingredient-item">
+                <input type="text" @bind="ingredient.Name" placeholder="Ingredient name" class="form-control" />
+                <input type="number" @bind="ingredient.Quantity" placeholder="Qty" class="form-control" step="0.25" />
+                <input type="text" @bind="ingredient.Unit" placeholder="Unit" class="form-control" />
+                <button type="button" @onclick="() => RemoveIngredient(ingredient)" class="btn btn-danger btn-sm">Remove</button>
+            </div>
+        }
+        <button type="button" @onclick="AddIngredient" class="btn btn-secondary btn-sm">Add Ingredient</button>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<Ingredient> Ingredients { get; set; } = new();
+
+    [Parameter]
+    public bool ReadOnly { get; set; } = true;
+
+    private void AddIngredient()
+    {
+        Ingredients.Add(new Ingredient());
+    }
+
+    private void RemoveIngredient(Ingredient ingredient)
+    {
+        Ingredients.Remove(ingredient);
+    }
+}

@@ -1,0 +1,129 @@
+@page "/recipes/new"
+@page "/recipes/{id:int}/edit"
+@using RecipeVault.Wasm.Models
+@using RecipeVault.Wasm.Services
+@inject IRecipeRepository RecipeRepository
+@inject NavigationManager Navigation
+
+<PageTitle>@(Id.HasValue ? "Edit Recipe" : "New Recipe") - RecipeVault</PageTitle>
+
+<div class="recipe-form-page">
+    <h1>@(Id.HasValue ? "Edit Recipe" : "Add New Recipe")</h1>
+
+    <EditForm Model="recipe" OnValidSubmit="SaveRecipe" class="recipe-form">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-section">
+            <h2>Basic Information</h2>
+            
+            <div class="form-group">
+                <label for="name">Recipe Name</label>
+                <InputText id="name" @bind-Value="recipe.Name" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <InputTextArea id="description" @bind-Value="recipe.Description" class="form-control" rows="3" />
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="prepTime">Prep Time (minutes)</label>
+                    <InputNumber id="prepTime" @bind-Value="recipe.PrepTimeMinutes" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="cookTime">Cook Time (minutes)</label>
+                    <InputNumber id="cookTime" @bind-Value="recipe.CookTimeMinutes" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="servings">Servings</label>
+                    <InputNumber id="servings" @bind-Value="recipe.Servings" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="difficulty">Difficulty</label>
+                    <InputSelect id="difficulty" @bind-Value="recipe.Difficulty" class="form-control">
+                        <option value="@DifficultyLevel.Easy">Easy</option>
+                        <option value="@DifficultyLevel.Medium">Medium</option>
+                        <option value="@DifficultyLevel.Hard">Hard</option>
+                        <option value="@DifficultyLevel.Expert">Expert</option>
+                    </InputSelect>
+                </div>
+
+                <div class="form-group">
+                    <label for="imageUrl">Image URL</label>
+                    <InputText id="imageUrl" @bind-Value="recipe.ImageUrl" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <IngredientList Ingredients="recipe.Ingredients" ReadOnly="false" />
+        </div>
+
+        <div class="form-section">
+            <InstructionSteps Instructions="recipe.Instructions" ReadOnly="false" />
+        </div>
+
+        <div class="form-section">
+            <TagSelector AvailableTags="availableTags" SelectedTags="recipe.Tags" ReadOnly="false" />
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Recipe</button>
+            <a href="@(Id.HasValue ? $"/recipes/{Id.Value}" : "/recipes")" class="btn btn-secondary">Cancel</a>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    private Recipe recipe = new()
+    {
+        Ingredients = new List<Ingredient>(),
+        Instructions = new List<Instruction>(),
+        Tags = new List<string>()
+    };
+
+    private List<string> availableTags = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        availableTags = await RecipeRepository.GetAllTagsAsync();
+        
+        if (Id.HasValue)
+        {
+            var existingRecipe = await RecipeRepository.GetByIdAsync(Id.Value);
+            if (existingRecipe != null)
+            {
+                recipe = existingRecipe;
+            }
+        }
+        else
+        {
+            recipe.Ingredients.Add(new Ingredient());
+            recipe.Instructions.Add(new Instruction { StepNumber = 1 });
+        }
+    }
+
+    private async Task SaveRecipe()
+    {
+        if (Id.HasValue)
+        {
+            await RecipeRepository.UpdateAsync(recipe);
+            Navigation.NavigateTo($"/recipes/{recipe.Id}");
+        }
+        else
+        {
+            var saved = await RecipeRepository.AddAsync(recipe);
+            Navigation.NavigateTo($"/recipes/{saved.Id}");
+        }
+    }
+}

@@ -1,0 +1,36 @@
+@using RecipeVault.Wasm.Models
+
+<div class="recipe-card">
+    @if (!string.IsNullOrEmpty(Recipe.ImageUrl))
+    {
+        <img src="@Recipe.ImageUrl" alt="@Recipe.Name" class="recipe-card-image" />
+    }
+    <div class="recipe-card-body">
+        <h3 class="recipe-card-title">@Recipe.Name</h3>
+        <p class="recipe-card-description">@Recipe.Description</p>
+        <div class="recipe-card-meta">
+            <TimeBadge PrepTime="Recipe.PrepTimeMinutes" CookTime="Recipe.CookTimeMinutes" />
+            <DifficultyStars Level="Recipe.Difficulty" />
+        </div>
+        <div class="recipe-card-tags">
+            @foreach (var tag in Recipe.Tags)
+            {
+                <span class="tag">@tag</span>
+            }
+        </div>
+        @if (ShowActions)
+        {
+            <div class="recipe-card-actions">
+                <a href="/recipes/@Recipe.Id" class="btn btn-primary">View Recipe</a>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Recipe Recipe { get; set; } = new();
+
+    [Parameter]
+    public bool ShowActions { get; set; } = true;
+}

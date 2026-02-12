@@ -1,0 +1,65 @@
+<div class="tag-selector">
+    <h3>Tags</h3>
+    <div class="available-tags">
+        @foreach (var tag in AvailableTags)
+        {
+            <label class="tag-checkbox">
+                <input type="checkbox" 
+                       checked="@SelectedTags.Contains(tag)"
+                       @onchange="e => ToggleTag(tag, e)" />
+                <span>@tag</span>
+            </label>
+        }
+    </div>
+    @if (!ReadOnly)
+    {
+        <div class="add-tag">
+            <input type="text" @bind="newTag" placeholder="New tag" class="form-control" @onkeyup="HandleKeyUp" />
+            <button type="button" @onclick="AddNewTag" class="btn btn-secondary btn-sm">Add Tag</button>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<string> AvailableTags { get; set; } = new();
+
+    [Parameter]
+    public List<string> SelectedTags { get; set; } = new();
+
+    [Parameter]
+    public bool ReadOnly { get; set; } = false;
+
+    private string newTag = string.Empty;
+
+    private void ToggleTag(string tag, ChangeEventArgs e)
+    {
+        var isChecked = (bool)(e.Value ?? false);
+        if (isChecked && !SelectedTags.Contains(tag))
+        {
+            SelectedTags.Add(tag);
+        }
+        else if (!isChecked && SelectedTags.Contains(tag))
+        {
+            SelectedTags.Remove(tag);
+        }
+    }
+
+    private void AddNewTag()
+    {
+        if (!string.IsNullOrWhiteSpace(newTag) && !AvailableTags.Contains(newTag))
+        {
+            AvailableTags.Add(newTag);
+            SelectedTags.Add(newTag);
+            newTag = string.Empty;
+        }
+    }
+
+    private void HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            AddNewTag();
+        }
+    }
+}

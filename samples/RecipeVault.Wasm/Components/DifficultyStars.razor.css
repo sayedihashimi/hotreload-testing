@@ -1,0 +1,20 @@
+.difficulty-stars {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.star {
+    color: #ddd;
+    font-size: 1.2rem;
+}
+
+.star.filled {
+    color: #ffc107;
+}
+
+.difficulty-text {
+    margin-left: 0.5rem;
+    font-size: 0.875rem;
+    color: #666;
+}
