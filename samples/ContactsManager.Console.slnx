@@ -1,2 +1,3 @@
 <Solution>
+  <Project Path="ContactsManager.Console/ContactsManager.Console.csproj" />
 </Solution>
