@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/ComponentCraft/">
+    <Project Path="ComponentCraft/ComponentCraft.Components/ComponentCraft.Components.csproj" />
+    <Project Path="ComponentCraft/ComponentCraft.Web/ComponentCraft.Web.csproj" />
+  </Folder>
+</Solution>
