@@ -4,40 +4,24 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<h1>📚 BookBuddy Dashboard</h1>
+<h1 class="text-3xl font-bold text-gray-800">📚 BookBuddy Dashboard</h1>
 
-<div class="row mt-4">
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h5 class="card-title">Total Books</h5>
-                <p class="card-text display-4">@Model.TotalBooks</p>
-            </div>
-        </div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+    <div class="bg-white rounded-lg shadow p-6 text-center">
+        <h5 class="text-sm font-semibold text-gray-500 uppercase">Total Books</h5>
+        <p class="text-4xl font-bold mt-2">@Model.TotalBooks</p>
     </div>
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h5 class="card-title">Books Read</h5>
-                <p class="card-text display-4 text-success">@Model.BooksRead</p>
-            </div>
-        </div>
+    <div class="bg-white rounded-lg shadow p-6 text-center">
+        <h5 class="text-sm font-semibold text-gray-500 uppercase">Books Read</h5>
+        <p class="text-4xl font-bold mt-2 text-green-600">@Model.BooksRead</p>
     </div>
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h5 class="card-title">Currently Reading</h5>
-                <p class="card-text display-4 text-primary">@Model.BooksReading</p>
-            </div>
-        </div>
+    <div class="bg-white rounded-lg shadow p-6 text-center">
+        <h5 class="text-sm font-semibold text-gray-500 uppercase">Currently Reading</h5>
+        <p class="text-4xl font-bold mt-2 text-indigo-600">@Model.BooksReading</p>
     </div>
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h5 class="card-title">Pages Read</h5>
-                <p class="card-text display-4">@Model.TotalPages</p>
-            </div>
-        </div>
+    <div class="bg-white rounded-lg shadow p-6 text-center">
+        <h5 class="text-sm font-semibold text-gray-500 uppercase">Pages Read</h5>
+        <p class="text-4xl font-bold mt-2">@Model.TotalPages</p>
     </div>
 </div>
 
@@ -46,61 +30,61 @@
     <partial name="_ReadingProgress" model="Model.CurrentGoal" />
 }
 
-<div class="row mt-4">
-    <div class="col-md-6">
-        <h3>Currently Reading</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-3">Currently Reading</h3>
         @if (Model.CurrentlyReading.Any())
         {
-            <div class="list-group">
+            <div class="space-y-2">
                 @foreach (var book in Model.CurrentlyReading)
                 {
-                    <a href="/Books/Details/@book.Id" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">@book.Title</h5>
-                            <small>@book.Pages pages</small>
+                    <a href="/Books/Details/@book.Id" class="block bg-white border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition">
+                        <div class="flex justify-between items-start">
+                            <h5 class="font-semibold text-gray-800">@book.Title</h5>
+                            <span class="text-sm text-gray-500">@book.Pages pages</span>
                         </div>
-                        <p class="mb-1">by @book.Author</p>
-                        <small>Started: @book.StartedDate?.ToString("MMM dd, yyyy")</small>
+                        <p class="text-gray-600 mt-1">by @book.Author</p>
+                        <span class="text-sm text-gray-400">Started: @book.StartedDate?.ToString("MMM dd, yyyy")</span>
                     </a>
                 }
             </div>
         }
         else
         {
-            <p class="text-muted">No books currently being read.</p>
+            <p class="text-gray-400">No books currently being read.</p>
         }
     </div>
     
-    <div class="col-md-6">
-        <h3>Recently Completed</h3>
+    <div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-3">Recently Completed</h3>
         @if (Model.RecentBooks.Any())
         {
-            <div class="list-group">
+            <div class="space-y-2">
                 @foreach (var book in Model.RecentBooks)
                 {
-                    <a href="/Books/Details/@book.Id" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">@book.Title</h5>
+                    <a href="/Books/Details/@book.Id" class="block bg-white border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition">
+                        <div class="flex justify-between items-start">
+                            <h5 class="font-semibold text-gray-800">@book.Title</h5>
                             @if (book.Rating.HasValue)
                             {
                                 <span>@string.Concat(Enumerable.Repeat("⭐", book.Rating.Value))</span>
                             }
                         </div>
-                        <p class="mb-1">by @book.Author</p>
-                        <small>Completed: @book.CompletedDate?.ToString("MMM dd, yyyy")</small>
+                        <p class="text-gray-600 mt-1">by @book.Author</p>
+                        <span class="text-sm text-gray-400">Completed: @book.CompletedDate?.ToString("MMM dd, yyyy")</span>
                     </a>
                 }
             </div>
         }
         else
         {
-            <p class="text-muted">No completed books yet.</p>
+            <p class="text-gray-400">No completed books yet.</p>
         }
     </div>
 </div>
 
-<div class="mt-4">
-    <a href="/Books" class="btn btn-primary">View All Books</a>
-    <a href="/Books/Create" class="btn btn-success">Add New Book</a>
+<div class="mt-6 flex gap-3">
+    <a href="/Books" class="inline-block px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">View All Books</a>
+    <a href="/Books/Create" class="inline-block px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Add New Book</a>
 </div>
 

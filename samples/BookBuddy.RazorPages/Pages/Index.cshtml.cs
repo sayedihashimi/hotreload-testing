@@ -22,8 +22,14 @@ public class IndexModel : PageModel
     public List<Book> RecentBooks { get; set; } = new();
     public List<Book> CurrentlyReading { get; set; } = new();
 
+    public void PrintInfo()
+    {
+        Console.WriteLine("############ \n*******IndexModel created");
+    }
+
     public async Task OnGetAsync()
     {
+        PrintInfo();
         TotalBooks = await _context.Books.CountAsync();
         BooksRead = await _context.Books.CountAsync(b => b.Status == ReadingStatus.Completed);
         BooksReading = await _context.Books.CountAsync(b => b.Status == ReadingStatus.Reading);

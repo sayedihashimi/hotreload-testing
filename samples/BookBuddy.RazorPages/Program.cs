@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using BookBuddy.RazorPages.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-
+Console.WriteLine("Starting BookBuddy.RazorPages...");
 // Add services to the container.
 builder.Services.AddRazorPages();
 

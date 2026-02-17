@@ -1,38 +1,38 @@
 @model BookBuddy.RazorPages.Models.Book
 
-<div class="card h-100">
-    <div class="card-body">
-        <h5 class="card-title">@Model.Title</h5>
-        <h6 class="card-subtitle mb-2 text-muted">by @Model.Author</h6>
+<div class="bg-white rounded-lg shadow h-full flex flex-col">
+    <div class="p-5 flex-grow">
+        <h5 class="text-lg font-semibold text-gray-800">@Model.Title</h5>
+        <h6 class="text-sm text-gray-500 mb-2">by @Model.Author</h6>
         
         @if (!string.IsNullOrEmpty(Model.Genre))
         {
-            <p class="card-text"><small class="text-muted">@Model.Genre</small></p>
+            <p class="text-sm text-gray-400">@Model.Genre</p>
         }
         
-        <p class="card-text">
-            <span class="badge 
-                @(Model.Status == BookBuddy.RazorPages.Models.ReadingStatus.Completed ? "bg-success" : 
-                  Model.Status == BookBuddy.RazorPages.Models.ReadingStatus.Reading ? "bg-primary" : 
-                  Model.Status == BookBuddy.RazorPages.Models.ReadingStatus.ToRead ? "bg-secondary" : 
-                  Model.Status == BookBuddy.RazorPages.Models.ReadingStatus.OnHold ? "bg-warning" : 
-                  "bg-dark")">
+        <div class="mt-3 flex items-center gap-2">
+            <span class="inline-block px-2 py-1 text-xs font-semibold rounded-full text-white
+                @(Model.Status == BookBuddy.RazorPages.Models.ReadingStatus.Completed ? "bg-green-500" : 
+                  Model.Status == BookBuddy.RazorPages.Models.ReadingStatus.Reading ? "bg-indigo-500" : 
+                  Model.Status == BookBuddy.RazorPages.Models.ReadingStatus.ToRead ? "bg-gray-500" : 
+                  Model.Status == BookBuddy.RazorPages.Models.ReadingStatus.OnHold ? "bg-yellow-500" : 
+                  "bg-gray-700")">
                 @Model.Status
             </span>
             
             @if (Model.Pages.HasValue)
             {
-                <span class="ms-2">@Model.Pages pages</span>
+                <span class="text-sm text-gray-500">@Model.Pages pages</span>
             }
-        </p>
+        </div>
         
         @if (Model.Rating.HasValue)
         {
-            <p class="card-text">@string.Concat(Enumerable.Repeat("⭐", Model.Rating.Value))</p>
+            <p class="mt-2">@string.Concat(Enumerable.Repeat("⭐", Model.Rating.Value))</p>
         }
     </div>
-    <div class="card-footer">
-        <a href="/Books/Details/@Model.Id" class="btn btn-sm btn-primary">View Details</a>
-        <a href="/Books/Edit/@Model.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+    <div class="border-t px-5 py-3 flex gap-2">
+        <a href="/Books/Details/@Model.Id" class="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">View Details</a>
+        <a href="/Books/Edit/@Model.Id" class="px-3 py-1 text-sm border border-gray-300 text-gray-600 rounded hover:bg-gray-50 transition">Edit</a>
     </div>
 </div>

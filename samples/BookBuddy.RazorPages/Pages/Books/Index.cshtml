@@ -4,54 +4,47 @@
     ViewData["Title"] = "Books";
 }
 
-<h1>📚 My Books</h1>
+<h1 class="text-3xl font-bold text-gray-800">📚 My Books</h1>
 
-<div class="row mb-3">
-    <div class="col-md-12">
-        <a href="/Books/Create" class="btn btn-success mb-3">Add New Book</a>
-    </div>
+<div class="mt-4">
+    <a href="/Books/Create" class="inline-block px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Add New Book</a>
 </div>
 
-<div class="row mb-3">
-    <div class="col-md-12">
-        <form method="get" class="row g-3">
-            <div class="col-md-4">
-                <label for="status" class="form-label">Filter by Status</label>
-                <select name="status" id="status" class="form-select" onchange="this.form.submit()">
-                    <option value="">All Statuses</option>
-                    <option value="ToRead" selected="@(Model.StatusFilter == "ToRead")">To Read</option>
-                    <option value="Reading" selected="@(Model.StatusFilter == "Reading")">Reading</option>
-                    <option value="Completed" selected="@(Model.StatusFilter == "Completed")">Completed</option>
-                    <option value="OnHold" selected="@(Model.StatusFilter == "OnHold")">On Hold</option>
-                    <option value="Abandoned" selected="@(Model.StatusFilter == "Abandoned")">Abandoned</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label for="genre" class="form-label">Filter by Genre</label>
-                <select name="genre" id="genre" class="form-select" onchange="this.form.submit()">
-                    <option value="">All Genres</option>
-                    @foreach (var genre in Model.Genres)
-                    {
-                        <option value="@genre" selected="@(Model.GenreFilter == genre)">@genre</option>
-                    }
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">&nbsp;</label>
-                <div>
-                    <a href="/Books" class="btn btn-secondary">Clear Filters</a>
-                </div>
-            </div>
-        </form>
-    </div>
+<div class="mt-4">
+    <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
+            <select name="status" id="status" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" onchange="this.form.submit()">
+                <option value="">All Statuses</option>
+                <option value="ToRead" selected="@(Model.StatusFilter == "ToRead")">To Read</option>
+                <option value="Reading" selected="@(Model.StatusFilter == "Reading")">Reading</option>
+                <option value="Completed" selected="@(Model.StatusFilter == "Completed")">Completed</option>
+                <option value="OnHold" selected="@(Model.StatusFilter == "OnHold")">On Hold</option>
+                <option value="Abandoned" selected="@(Model.StatusFilter == "Abandoned")">Abandoned</option>
+            </select>
+        </div>
+        <div>
+            <label for="genre" class="block text-sm font-medium text-gray-700 mb-1">Filter by Genre</label>
+            <select name="genre" id="genre" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" onchange="this.form.submit()">
+                <option value="">All Genres</option>
+                @foreach (var genre in Model.Genres)
+                {
+                    <option value="@genre" selected="@(Model.GenreFilter == genre)">@genre</option>
+                }
+            </select>
+        </div>
+        <div class="flex items-end">
+            <a href="/Books" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Clear Filters</a>
+        </div>
+    </form>
 </div>
 
 @if (Model.Books.Any())
 {
-    <div class="row">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
         @foreach (var book in Model.Books)
         {
-            <div class="col-md-4 mb-3">
+            <div>
                 <partial name="_BookCard" model="book" />
             </div>
         }
@@ -59,7 +52,7 @@
 }
 else
 {
-    <div class="alert alert-info">
-        <p>No books found. <a href="/Books/Create">Add your first book!</a></p>
+    <div class="mt-6 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg p-4">
+        <p>No books found. <a href="/Books/Create" class="text-indigo-600 underline hover:text-indigo-800">Add your first book!</a></p>
     </div>
 }

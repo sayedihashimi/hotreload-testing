@@ -354,7 +354,8 @@ ComponentCraft.Components/  (Razor Class Library)
 **Type:** Razor Pages  
 **Project Name:** `BookBuddy.RazorPages`  
 **Theme:** A personal book tracking and reading list app  
-**Database:** SQLite with EF Core
+**Database:** SQLite with EF Core  
+**CSS Framework:** Tailwind CSS (via CDN using `@tailwindcss/browser`)
 
 ### Entities
 
@@ -436,10 +437,11 @@ public enum ReadingStatus { WantToRead, Reading, Finished, Abandoned }
 ### Hot Reload Test Points
 
 - Modify Razor page layouts
-- Update partial view styling
+- Update partial view Tailwind classes
 - Add new form fields
 - Change PageModel logic
-- Modify CSS in wwwroot
+- Modify Tailwind utility classes in Razor views
+- Update custom CSS in wwwroot
 
 ---
 
