@@ -1,0 +1,195 @@
+@host = http://localhost:5190
+
+### ==================
+### WORKOUTS
+### ==================
+
+### Get all workouts
+GET {{host}}/api/workouts
+
+### Get workouts - filter by type
+GET {{host}}/api/workouts?type=0
+
+### Get workouts - filter by date range
+GET {{host}}/api/workouts?fromDate=2026-02-10&toDate=2026-02-18
+
+### Get workouts - filter by type and date range
+GET {{host}}/api/workouts?type=1&fromDate=2026-02-01&toDate=2026-02-28
+
+### Get workout by ID (includes exercises)
+GET {{host}}/api/workouts/1
+
+### Get another workout by ID
+GET {{host}}/api/workouts/6
+
+### Create a new workout (strength, with exercises)
+POST {{host}}/api/workouts
+Content-Type: application/json
+
+{
+  "name": "Morning Push Session",
+  "date": "2026-02-19T07:00:00",
+  "durationMinutes": 45,
+  "type": 0,
+  "caloriesBurned": 290,
+  "notes": "Quick morning session before work",
+  "exercises": [
+    { "exerciseDefinitionId": 1, "sets": 4, "reps": 8, "weightKg": 82.5 },
+    { "exerciseDefinitionId": 5, "sets": 3, "reps": 10, "weightKg": 24 },
+    { "exerciseDefinitionId": 7, "sets": 3, "reps": 12, "weightKg": 17.5 }
+  ]
+}
+
+### Create a cardio workout (no exercises inline)
+POST {{host}}/api/workouts
+Content-Type: application/json
+
+{
+  "name": "Evening Run",
+  "date": "2026-02-19T18:30:00",
+  "durationMinutes": 40,
+  "type": 1,
+  "caloriesBurned": 380,
+  "notes": null,
+  "exercises": []
+}
+
+### Update a workout
+PUT {{host}}/api/workouts/3
+Content-Type: application/json
+
+{
+  "name": "Steady-State Cardio",
+  "notes": "Moderate pace, felt good",
+  "caloriesBurned": 320
+}
+
+### Delete a workout
+DELETE {{host}}/api/workouts/8
+
+### ==================
+### EXERCISES (nested under workouts)
+### ==================
+
+### Add an exercise to an existing workout
+POST {{host}}/api/workouts/3/exercises
+Content-Type: application/json
+
+{
+  "exerciseDefinitionId": 9,
+  "sets": 1,
+  "reps": 1,
+  "durationSeconds": 1800
+}
+
+### Update an exercise in a workout
+PUT {{host}}/api/workouts/1/exercises/1
+Content-Type: application/json
+
+{
+  "sets": 5,
+  "reps": 6,
+  "weightKg": 85
+}
+
+### Remove an exercise from a workout
+DELETE {{host}}/api/workouts/7/exercises/21
+
+### ==================
+### EXERCISE DEFINITIONS
+### ==================
+
+### Get all exercise definitions
+GET {{host}}/api/exercise-definitions
+
+### Get exercise definition by ID
+GET {{host}}/api/exercise-definitions/1
+
+### Create a new exercise definition
+POST {{host}}/api/exercise-definitions
+Content-Type: application/json
+
+{
+  "name": "Romanian Deadlift",
+  "description": "Hip-hinge movement targeting hamstrings and glutes",
+  "primaryMuscleGroup": 5,
+  "secondaryMuscleGroup": 1,
+  "category": 0
+}
+
+### Create another exercise definition
+POST {{host}}/api/exercise-definitions
+Content-Type: application/json
+
+{
+  "name": "Lat Pulldown",
+  "description": "Cable machine pulldown targeting lats",
+  "primaryMuscleGroup": 1,
+  "secondaryMuscleGroup": 3,
+  "category": 4
+}
+
+### Update an exercise definition
+PUT {{host}}/api/exercise-definitions/6
+Content-Type: application/json
+
+{
+  "description": "Isometric core stabilization exercise - hold in push-up position on forearms"
+}
+
+### ==================
+### PERSONAL RECORDS
+### ==================
+
+### Get all personal records
+GET {{host}}/api/personal-records
+
+### Get PRs for a specific exercise (Bench Press)
+GET {{host}}/api/personal-records/exercise/1
+
+### Get PRs for a specific exercise (Squat)
+GET {{host}}/api/personal-records/exercise/2
+
+### Record a new personal record
+POST {{host}}/api/personal-records
+Content-Type: application/json
+
+{
+  "exerciseDefinitionId": 1,
+  "weightKg": 90,
+  "reps": 5,
+  "achievedDate": "2026-02-19"
+}
+
+### Record another PR
+POST {{host}}/api/personal-records
+Content-Type: application/json
+
+{
+  "exerciseDefinitionId": 2,
+  "weightKg": 110,
+  "reps": 3,
+  "achievedDate": "2026-02-19"
+}
+
+### ==================
+### STATS
+### ==================
+
+### Get weekly summary
+GET {{host}}/api/stats/weekly-summary
+
+### Get monthly summary
+GET {{host}}/api/stats/monthly-summary
+
+### Get muscle group breakdown
+GET {{host}}/api/stats/muscle-group-breakdown
+
+### Get progress for Bench Press
+GET {{host}}/api/stats/progress/1
+
+### Get progress for Squat
+GET {{host}}/api/stats/progress/2
+
+### Get progress for Deadlift
+GET {{host}}/api/stats/progress/3

@@ -1,0 +1,141 @@
+@host = http://localhost:5180
+
+### ==================
+### LINKS
+### ==================
+
+### Get all links
+GET {{host}}/api/links
+
+### Get all links - search by keyword
+GET {{host}}/api/links?search=dotnet
+
+### Get all links - filter by collection
+GET {{host}}/api/links?collectionId=1
+
+### Get all links - favorites only
+GET {{host}}/api/links?favoritesOnly=true
+
+### Get favorite links (dedicated endpoint)
+GET {{host}}/api/links/favorites
+
+### Get link by ID
+GET {{host}}/api/links/1
+
+### Create a new link
+POST {{host}}/api/links
+Content-Type: application/json
+
+{
+  "url": "https://blazor.net",
+  "title": "Blazor",
+  "description": "Build client web apps with C#",
+  "collectionId": 1,
+  "tags": ["reference", "tool"]
+}
+
+### Create a link with new tags
+POST {{host}}/api/links
+Content-Type: application/json
+
+{
+  "url": "https://minimal-apis.dev",
+  "title": "Minimal APIs Dev",
+  "description": "Community resource for ASP.NET Minimal APIs",
+  "collectionId": 3,
+  "tags": ["tutorial", "community"]
+}
+
+### Update a link - change title and mark as favorite
+PUT {{host}}/api/links/4
+Content-Type: application/json
+
+{
+  "title": ".NET Developer Blog",
+  "isFavorite": true
+}
+
+### Update a link - move to different collection
+PUT {{host}}/api/links/8
+Content-Type: application/json
+
+{
+  "collectionId": 3,
+  "description": "Tech news and startup coverage"
+}
+
+### Record a click on a link
+POST {{host}}/api/links/1/click
+
+### Record another click
+POST {{host}}/api/links/5/click
+
+### Delete a link
+DELETE {{host}}/api/links/15
+
+### ==================
+### COLLECTIONS
+### ==================
+
+### Get all collections
+GET {{host}}/api/collections
+
+### Get collection by ID (includes links)
+GET {{host}}/api/collections/1
+
+### Get links in a specific collection
+GET {{host}}/api/collections/2/links
+
+### Create a new collection
+POST {{host}}/api/collections
+Content-Type: application/json
+
+{
+  "name": "Podcasts",
+  "description": "Tech podcasts and audio content",
+  "color": "#8B5CF6",
+  "isPublic": true
+}
+
+### Update a collection
+PUT {{host}}/api/collections/2
+Content-Type: application/json
+
+{
+  "name": "Tech News",
+  "color": "#F59E0B"
+}
+
+### Delete a collection
+DELETE {{host}}/api/collections/3
+
+### ==================
+### TAGS
+### ==================
+
+### Get all tags (with usage counts)
+GET {{host}}/api/tags
+
+### Create a new tag
+POST {{host}}/api/tags
+Content-Type: application/json
+
+{
+  "name": "podcast"
+}
+
+### Delete a tag
+DELETE {{host}}/api/tags/5
+
+### ==================
+### STATS
+### ==================
+
+### Get overall statistics
+GET {{host}}/api/stats
+
+### Get top clicked links (default: 10)
+GET {{host}}/api/stats/top-clicked
+
+### Get top 5 clicked links
+GET {{host}}/api/stats/top-clicked?count=5

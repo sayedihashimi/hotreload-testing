@@ -670,6 +670,10 @@ public record StatsResponse(int TotalLinks, int TotalCollections, int TotalClick
 - Route grouping with `MapGroup`
 - TypedResults for response type metadata
 
+### HTTP File
+
+Include a `LinkVault.MinimalApi.http` file that exercises all endpoint groups: CRUD operations on links, collections, and tags, plus click tracking and stats queries.
+
 ### Hot Reload Test Points
 
 - Modify endpoint route paths
@@ -808,6 +812,10 @@ public record PersonalRecordResponse(int Id, string ExerciseName, decimal Weight
 - OpenAPI/Swagger documentation via `Microsoft.AspNetCore.OpenApi`
 - Proper HTTP status codes and `ProblemDetails` responses
 - Pagination support for list endpoints
+
+### HTTP File
+
+Include a `FitLog.Api.http` file that exercises all controllers: workout CRUD, exercise management, exercise definitions, personal records, and stats endpoints.
 
 ### Hot Reload Test Points
 
