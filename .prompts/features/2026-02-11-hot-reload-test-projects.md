@@ -561,7 +561,269 @@ public enum RecurrenceInterval { Daily, Weekly, BiWeekly, Monthly, Yearly }
 
 ---
 
-## Project 8: Console App (Simple) - "TaskTimer"
+## Project 8: Web API (Minimal APIs) - "LinkVault"
+
+**Type:** ASP.NET Core Web API (Minimal APIs)  
+**Project Name:** `LinkVault.MinimalApi`  
+**Theme:** A URL bookmarking and link management API  
+**Database:** SQLite with EF Core
+
+### Entities
+
+```csharp
+public class Link
+{
+    public int Id { get; set; }
+    public string Url { get; set; }
+    public string Title { get; set; }
+    public string? Description { get; set; }
+    public bool IsFavorite { get; set; }
+    public int ClickCount { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? LastClickedAt { get; set; }
+    public int CollectionId { get; set; }
+    public Collection Collection { get; set; }
+    public ICollection<LinkTag> LinkTags { get; set; }
+}
+
+public class Collection
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string? Description { get; set; }
+    public string Color { get; set; }
+    public bool IsPublic { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public ICollection<Link> Links { get; set; }
+}
+
+public class Tag
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public ICollection<LinkTag> LinkTags { get; set; }
+}
+
+public class LinkTag
+{
+    public int LinkId { get; set; }
+    public int TagId { get; set; }
+    public Link Link { get; set; }
+    public Tag Tag { get; set; }
+}
+```
+
+### API Endpoints (Minimal APIs)
+
+Endpoints organized into extension method groups:
+
+```csharp
+// LinkEndpoints.cs
+app.MapGet("/api/links", ...)              // List links (with filtering/search)
+app.MapGet("/api/links/{id}", ...)          // Get link by ID
+app.MapPost("/api/links", ...)              // Create link
+app.MapPut("/api/links/{id}", ...)          // Update link
+app.MapDelete("/api/links/{id}", ...)       // Delete link
+app.MapPost("/api/links/{id}/click", ...)   // Record a click
+app.MapGet("/api/links/favorites", ...)     // Get favorite links
+
+// CollectionEndpoints.cs
+app.MapGet("/api/collections", ...)             // List collections
+app.MapGet("/api/collections/{id}", ...)        // Get collection with links
+app.MapPost("/api/collections", ...)            // Create collection
+app.MapPut("/api/collections/{id}", ...)        // Update collection
+app.MapDelete("/api/collections/{id}", ...)     // Delete collection
+app.MapGet("/api/collections/{id}/links", ...)  // Get links in collection
+
+// TagEndpoints.cs
+app.MapGet("/api/tags", ...)                // List tags with usage count
+app.MapPost("/api/tags", ...)               // Create tag
+app.MapDelete("/api/tags/{id}", ...)        // Delete tag
+
+// StatsEndpoints.cs
+app.MapGet("/api/stats", ...)               // Overall statistics
+app.MapGet("/api/stats/top-clicked", ...)   // Most clicked links
+```
+
+### Services
+
+- `ILinkService` - Link CRUD and search operations
+- `ICollectionService` - Collection management
+- `ITagService` - Tag management
+- `IStatsService` - Click tracking and statistics
+
+### DTOs / Request-Response Models
+
+```csharp
+public record CreateLinkRequest(string Url, string Title, string? Description, int CollectionId, List<string>? Tags);
+public record UpdateLinkRequest(string? Title, string? Description, bool? IsFavorite, int? CollectionId);
+public record LinkResponse(int Id, string Url, string Title, string? Description, bool IsFavorite, int ClickCount, DateTime CreatedAt, string CollectionName, List<string> Tags);
+public record CollectionResponse(int Id, string Name, string? Description, string Color, bool IsPublic, int LinkCount);
+public record StatsResponse(int TotalLinks, int TotalCollections, int TotalClicks, int FavoriteCount);
+```
+
+### Middleware / Features
+
+- Request validation using endpoint filters
+- JSON serialization configuration (camelCase, etc.)
+- OpenAPI/Swagger documentation via `Microsoft.AspNetCore.OpenApi`
+- Route grouping with `MapGroup`
+- TypedResults for response type metadata
+
+### Hot Reload Test Points
+
+- Modify endpoint route paths
+- Add new endpoints to existing groups
+- Change response DTO shapes
+- Update endpoint filter/validation logic
+- Modify service business logic
+- Change OpenAPI metadata/descriptions
+- Add new route groups
+- Update middleware pipeline in Program.cs
+
+---
+
+## Project 9: Web API (Controllers) - "FitLog"
+
+**Type:** ASP.NET Core Web API (Controllers)  
+**Project Name:** `FitLog.Api`  
+**Theme:** A fitness workout logging and tracking API  
+**Database:** SQLite with EF Core
+
+### Entities
+
+```csharp
+public class Workout
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public DateTime Date { get; set; }
+    public int DurationMinutes { get; set; }
+    public string? Notes { get; set; }
+    public WorkoutType Type { get; set; }
+    public int CaloriesBurned { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public ICollection<Exercise> Exercises { get; set; }
+}
+
+public class Exercise
+{
+    public int Id { get; set; }
+    public int WorkoutId { get; set; }
+    public string Name { get; set; }
+    public int Sets { get; set; }
+    public int Reps { get; set; }
+    public decimal? WeightKg { get; set; }
+    public int? DurationSeconds { get; set; }
+    public int OrderIndex { get; set; }
+    public Workout Workout { get; set; }
+    public int ExerciseDefinitionId { get; set; }
+    public ExerciseDefinition ExerciseDefinition { get; set; }
+}
+
+public class ExerciseDefinition
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string? Description { get; set; }
+    public MuscleGroup PrimaryMuscleGroup { get; set; }
+    public MuscleGroup? SecondaryMuscleGroup { get; set; }
+    public ExerciseCategory Category { get; set; }
+    public ICollection<Exercise> Exercises { get; set; }
+}
+
+public class PersonalRecord
+{
+    public int Id { get; set; }
+    public int ExerciseDefinitionId { get; set; }
+    public decimal WeightKg { get; set; }
+    public int Reps { get; set; }
+    public DateTime AchievedDate { get; set; }
+    public ExerciseDefinition ExerciseDefinition { get; set; }
+}
+
+public enum WorkoutType { Strength, Cardio, Flexibility, HIIT, Mixed }
+public enum MuscleGroup { Chest, Back, Shoulders, Arms, Core, Legs, FullBody }
+public enum ExerciseCategory { Barbell, Dumbbell, Machine, Bodyweight, Cable, Cardio }
+```
+
+### Controllers
+
+- `WorkoutsController` - Workout CRUD and filtering
+- `ExercisesController` - Exercise management within workouts
+- `ExerciseDefinitionsController` - Exercise library management
+- `PersonalRecordsController` - PR tracking and history
+- `StatsController` - Workout statistics and summaries
+
+### API Endpoints
+
+```
+GET    /api/workouts                     - List workouts (with date range/type filters)
+GET    /api/workouts/{id}                - Get workout with exercises
+POST   /api/workouts                     - Create workout
+PUT    /api/workouts/{id}                - Update workout
+DELETE /api/workouts/{id}                - Delete workout
+
+POST   /api/workouts/{workoutId}/exercises       - Add exercise to workout
+PUT    /api/workouts/{workoutId}/exercises/{id}   - Update exercise
+DELETE /api/workouts/{workoutId}/exercises/{id}   - Remove exercise
+
+GET    /api/exercise-definitions          - List exercise library
+GET    /api/exercise-definitions/{id}     - Get exercise details
+POST   /api/exercise-definitions          - Add exercise to library
+PUT    /api/exercise-definitions/{id}     - Update exercise definition
+
+GET    /api/personal-records              - List all PRs
+GET    /api/personal-records/exercise/{exerciseDefinitionId}  - PRs for specific exercise
+POST   /api/personal-records              - Record a new PR
+
+GET    /api/stats/weekly-summary          - Current week summary
+GET    /api/stats/monthly-summary         - Current month summary
+GET    /api/stats/muscle-group-breakdown  - Volume by muscle group
+GET    /api/stats/progress/{exerciseDefinitionId}  - Progress over time for an exercise
+```
+
+### Services
+
+- `IWorkoutService` - Workout CRUD and business logic
+- `IExerciseService` - Exercise management
+- `IPersonalRecordService` - PR detection and tracking
+- `IStatsService` - Statistics and summary calculations
+
+### DTOs / Request-Response Models
+
+```csharp
+public record CreateWorkoutRequest(string Name, DateTime Date, int DurationMinutes, WorkoutType Type, int CaloriesBurned, string? Notes, List<CreateExerciseRequest>? Exercises);
+public record CreateExerciseRequest(int ExerciseDefinitionId, int Sets, int Reps, decimal? WeightKg, int? DurationSeconds);
+public record WorkoutResponse(int Id, string Name, DateTime Date, int DurationMinutes, WorkoutType Type, int CaloriesBurned, string? Notes, List<ExerciseResponse> Exercises);
+public record ExerciseResponse(int Id, string ExerciseName, int Sets, int Reps, decimal? WeightKg, int? DurationSeconds, string PrimaryMuscleGroup);
+public record WeeklySummaryResponse(int TotalWorkouts, int TotalMinutes, int TotalCalories, Dictionary<string, int> WorkoutsByType);
+public record PersonalRecordResponse(int Id, string ExerciseName, decimal WeightKg, int Reps, DateTime AchievedDate);
+```
+
+### Features
+
+- Model validation via data annotations and `[ApiController]`
+- Action filters for common cross-cutting concerns
+- OpenAPI/Swagger documentation via `Microsoft.AspNetCore.OpenApi`
+- Proper HTTP status codes and `ProblemDetails` responses
+- Pagination support for list endpoints
+
+### Hot Reload Test Points
+
+- Modify controller action logic
+- Add new controller actions/endpoints
+- Change DTO/response model shapes
+- Update model validation attributes
+- Modify action filters
+- Change service business logic
+- Update route attributes
+- Add new controllers
+- Modify middleware configuration in Program.cs
+
+---
+
+## Project 10: Console App (Simple) - "TaskTimer"
 
 **Type:** Console Application  
 **Project Name:** `TaskTimer.Console`  
@@ -632,7 +894,7 @@ Select option: _
 
 ---
 
-## Project 9: Console App (with EF) - "ContactsManager"
+## Project 11: Console App (with EF) - "ContactsManager"
 
 **Type:** Console Application  
 **Project Name:** `ContactsManager.Console`  
@@ -716,6 +978,18 @@ Each project with a database should include seed data for immediate testing:
 - 2 assignees: "Alice Smith", "Bob Johnson"
 - 5-8 sample tasks across categories and statuses
 
+### LinkVault (Minimal API)
+- 3 collections: "Dev Tools", "News", "Learning"
+- 10-15 sample links across collections with varying click counts
+- 5 tags: "reference", "tutorial", "tool", "article", "video"
+- A few links marked as favorites
+
+### FitLog (Controllers API)
+- 8-10 exercise definitions across muscle groups and categories
+- 5-8 sample workouts over the past 2 weeks with exercises
+- 3-5 personal records
+- Mix of workout types (Strength, Cardio, HIIT)
+
 ### RecipeVault (all Blazor variants with DB)
 - 5 recipes with full ingredients and instructions
 - 6 tags: "Quick", "Vegetarian", "Dessert", "Healthy", "Comfort Food", "Breakfast"
@@ -750,6 +1024,8 @@ samples/
 ├── ComponentCraft/              (Blazor + RCL)
 ├── BookBuddy.RazorPages/        (Razor Pages)
 ├── ExpenseTracker.Mvc/          (MVC)
+├── LinkVault.MinimalApi/        (Web API - Minimal APIs)
+├── FitLog.Api/                  (Web API - Controllers)
 ├── TaskTimer.Console/           (Console)
 └── ContactsManager.Console/     (Console + EF)
 ```
@@ -763,6 +1039,8 @@ samples/
 | ComponentCraft.* | Blazor + RCL | None | UI Component Library |
 | BookBuddy.RazorPages | Razor Pages | SQLite/EF | Book Tracking |
 | ExpenseTracker.Mvc | MVC | SQLite/EF | Expense Tracking |
+| LinkVault.MinimalApi | Web API (Minimal APIs) | SQLite/EF | Link Bookmarking |
+| FitLog.Api | Web API (Controllers) | SQLite/EF | Fitness Tracking |
 | TaskTimer.Console | Console | None | Pomodoro Timer |
 | ContactsManager.Console | Console | SQLite/EF | Contact Management |
 
