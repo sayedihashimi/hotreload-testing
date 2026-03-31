@@ -1,14 +1,14 @@
 <Solution>
   <Folder Name="/ProjectManager/">
-    <Project Path="ProjectManager/ProjectManager.Client/ProjectManager.Client.csproj" />
-    <Project Path="ProjectManager/ProjectManager/ProjectManager.csproj" />
+    <Project Path="BlazorAuto/ProjectManager/ProjectManager.Client/ProjectManager.Client.csproj" />
+    <Project Path="BlazorAuto/ProjectManager/ProjectManager/ProjectManager.csproj" />
   </Folder>
   <Folder Name="/SchoolApp/">
-    <Project Path="SchoolApp/SchoolApp.Client/SchoolApp.Client.csproj" />
-    <Project Path="SchoolApp/SchoolApp/SchoolApp.csproj" />
+    <Project Path="BlazorAuto/SchoolApp/SchoolApp.Client/SchoolApp.Client.csproj" />
+    <Project Path="BlazorAuto/SchoolApp/SchoolApp/SchoolApp.csproj" />
   </Folder>
-  <Project Path="ClinicApp/ClinicApp.csproj" />
-  <Project Path="Contacts/Contacts.csproj" />
-  <Project Path="LibraryApp/LibraryApp.csproj" />
-  <Project Path="ProductsApi/ProductsApi.csproj" />
+  <Project Path="BlazorServer/ClinicApp/ClinicApp.csproj" />
+  <Project Path="RazorPages/Contacts/Contacts.csproj" />
+  <Project Path="BlazorServer/LibraryApp/LibraryApp.csproj" />
+  <Project Path="MinimalAPI/ProductsApi/ProductsApi.csproj" />
 </Solution>

@@ -1,4 +1,0 @@
-<Solution>
-  <Project Path="ProjectManager/ProjectManager.csproj" />
-  <Project Path="ProjectManager.Client/ProjectManager.Client.csproj" />
-</Solution>
